@@ -1,2 +1,2 @@
-# SobieNote_Android
-SobieNote_Android
+# SobieNote_Flutter
+SobieNote_Flutter
