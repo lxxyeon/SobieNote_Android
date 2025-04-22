@@ -64,7 +64,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
       child: TabBarView(
         physics: NeverScrollableScrollPhysics(),
         controller: controller,
-        children: [HomeScreen(), ReportScreen(), UploadScreen()],
+        children: [HomeScreen(), UploadScreen(), ReportScreen()],
       ),
     );
   }

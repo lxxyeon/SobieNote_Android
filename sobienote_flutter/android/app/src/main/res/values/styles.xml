@@ -15,4 +15,17 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+
+    <style name="CropperTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- SafeArea 영역 보장 -->
+        <item name="android:fitsSystemWindows">true</item>
+
+        <!-- 상태바/내비바 배경 -->
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+
+        <!-- 노치 영역 대응 -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
 </resources>
