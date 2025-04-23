@@ -12,7 +12,7 @@ class RootTab extends StatefulWidget {
   State<RootTab> createState() => _RootTabState();
 }
 
-class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
+class _RootTabState extends State<RootTab> with TickerProviderStateMixin {
   int index = 0;
   late TabController controller;
 
