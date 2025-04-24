@@ -10,6 +10,7 @@ import 'package:sobienote_flutter/common/const/tags_data.dart';
 import 'package:sobienote_flutter/component/tag_selector.dart';
 
 import '../common/const/colors.dart';
+import '../common/const/text_style.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({super.key});
@@ -92,8 +93,8 @@ class _UploadScreenState extends State<UploadScreen> {
           ],
           cancelButton: CupertinoActionSheetAction(
             onPressed: () => Navigator.pop(context),
-            child: Text('취소', style: TextStyle(fontWeight: FontWeight.bold)),
             isDefaultAction: true,
+            child: Text('취소', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         );
       },
@@ -107,12 +108,11 @@ class _UploadScreenState extends State<UploadScreen> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Text(
-              '소비 기록',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: GRAY_00,
+            SizedBox(
+              height: kToolbarHeight,
+              child: Text(
+                '소비 기록',
+                style: kTitleTextStyle,
               ),
             ),
             renderUploadPic(),
@@ -159,7 +159,7 @@ class _UploadScreenState extends State<UploadScreen> {
               width: screenWidth * 0.9,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: OLIVE,
+                  backgroundColor: TEAL,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -188,24 +188,9 @@ class _UploadScreenState extends State<UploadScreen> {
           ),
           child:
               _imageFile == null
-                  ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add_circle, size: 50, color: OLIVE),
-                      const SizedBox(height: 10),
-                      Text(
-                        '사진을 추가해주세요!',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: OLIVE,
-                        ),
-                      ),
-                    ],
-                  )
+                  ? Image.asset('assets/images/imagePickerImg_G.png')
                   : ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                     child: Image.file(
                       File(_imageFile!.path),
                       fit: BoxFit.cover,
@@ -223,11 +208,7 @@ class _UploadScreenState extends State<UploadScreen> {
       children: [
         Text(
           '오늘의 소비에 대해 더 자세히 기록해 볼까요?',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: GRAY_00,
-          ),
+          style: kTitleTextStyle,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),

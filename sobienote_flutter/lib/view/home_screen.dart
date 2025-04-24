@@ -45,18 +45,18 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('이번 달 소비목표', style: TextStyle(fontSize: 16)),
+                        Text('이번 달 소비목표', style: TextStyle(fontSize: 16, color: FONT_GRAY)),
                         const SizedBox(height: 9),
                         TextField(
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                           decoration: InputDecoration(
                             hintText: '목표를 적어주세요!',
                             hintStyle: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 24,
                             ),
@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                               color: Colors.white,
                             ),
                             filled: true,
-                            fillColor: OLIVE,
+                            fillColor: TEAL,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide.none,
@@ -88,16 +88,7 @@ class HomeScreen extends StatelessWidget {
         ),
         SliverFillRemaining(
           hasScrollBody: false,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset('assets/images/잠자리채.png', width: 100, ),
-                SizedBox(height: 16),
-                Text('채집한 물건을 추가해 보세요'),
-              ],
-            ),
-          ),
+          child: Image.asset('assets/images/nullImg_G.png'),
         )
         // SliverGrid(
         //   delegate: SliverChildBuilderDelegate((context, index) {

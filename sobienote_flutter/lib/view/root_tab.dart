@@ -3,6 +3,7 @@ import 'package:sobienote_flutter/view/home_screen.dart';
 import 'package:sobienote_flutter/view/report_screen.dart';
 import 'package:sobienote_flutter/view/upload_screen.dart';
 
+import '../common/const/colors.dart';
 import '../component/default_layout.dart';
 
 class RootTab extends StatefulWidget {
@@ -38,10 +39,13 @@ class _RootTabState extends State<RootTab> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
+      backgroundColor: controller.index == 1 ? LIGHT_TEAL : Colors.white,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
+        backgroundColor: controller.index == 1 ? Colors.white:  TAB_BG_COLOR,
         selectedFontSize: 14,
         unselectedFontSize: 14,
+        unselectedItemColor: DARK_GRAY,
+        selectedItemColor: DARK_TEAL,
         type: BottomNavigationBarType.fixed,
         onTap: (int index) {
           setState(() {

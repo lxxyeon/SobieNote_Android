@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sobienote_flutter/common/const/colors.dart';
 import 'package:sobienote_flutter/common/const/text_style.dart';
+import 'package:sobienote_flutter/component/report/report_category.dart';
 
 import '../component/top_sheet_selector.dart';
 
@@ -13,8 +15,12 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen>
     with TickerProviderStateMixin {
   bool isTopSheetVisible = false;
-  int selectedMonth = DateTime.now().month;
-  int selectedYear = DateTime.now().year;
+  int selectedMonth = DateTime
+      .now()
+      .month;
+  int selectedYear = DateTime
+      .now()
+      .year;
   int tabIdx = 0;
   late TabController tabController;
 
@@ -35,10 +41,14 @@ class _ReportScreenState extends State<ReportScreen>
     setState(() {
       if (tabController.index == 0) {
         tabIdx = 0;
-        selectedMonth = DateTime.now().month;
+        selectedMonth = DateTime
+            .now()
+            .month;
       } else {
         tabIdx = 0;
-        selectedYear = DateTime.now().year;
+        selectedYear = DateTime
+            .now()
+            .year;
       }
     });
   }
@@ -52,7 +62,10 @@ class _ReportScreenState extends State<ReportScreen>
   @override
   Widget build(BuildContext context) {
     final double appBarHeight =
-        MediaQuery.of(context).padding.top + kToolbarHeight + kTextTabBarHeight;
+        MediaQuery
+            .of(context)
+            .padding
+            .top + kToolbarHeight + kTextTabBarHeight;
 
     return Stack(
       children: [
@@ -66,56 +79,68 @@ class _ReportScreenState extends State<ReportScreen>
 
   Widget _reportBody(double appBarHeight) {
     return NestedScrollView(
-      headerSliverBuilder: (_, __) => [_buildSliverAppBar(appBarHeight)],
-      body: Center(child: Text("리포트 본문 영역", style: TextStyle(fontSize: 18))),
+      headerSliverBuilder: (_, __) => [_buildSliverAppBar()],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          children: [
+            ReportCategory(),
+            const SizedBox(height: 66),
+            const Divider(),
+            const SizedBox(height: 32),
+
+            const SizedBox(height: 66),
+            const Divider(),
+            const SizedBox(height: 32),
+
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildSliverAppBar(double appBarHeight) {
+  Widget _buildSliverAppBar() {
     return SliverAppBar(
-      pinned: true,
+      pinned: false,
       backgroundColor: isTopSheetVisible ? Colors.white : Colors.transparent,
       elevation: 0,
-      expandedHeight: appBarHeight,
-      flexibleSpace: SafeArea(
-        child: Column(
-          children: [
-            TabBar(
-              controller: tabController,
-              dividerColor: Colors.transparent,
-              indicatorSize: TabBarIndicatorSize.tab,
-              tabs: const [
-                Tab(child: Text('월간', style: kTitleTextStyle)),
-                Tab(child: Text('연간', style: kTitleTextStyle)),
-              ],
-            ),
-            GestureDetector(
-              onTap: _toggleTopSheet,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 16,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      tabController.index == 0
-                          ? '$selectedMonth월'
-                          : '$selectedYear년',
-                      style: kTitleTextStyle,
-                    ),
-                    Icon(
-                      isTopSheetVisible
-                          ? Icons.arrow_drop_up
-                          : Icons.arrow_drop_down,
-                    ),
-                  ],
-                ),
+      toolbarHeight: kToolbarHeight + kTextTabBarHeight,
+      title: Column(
+        children: [
+          TabBar(
+            controller: tabController,
+            dividerColor: Colors.transparent,
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicatorColor: DARK_TEAL,
+            indicatorWeight: 3.0,
+            tabs: const [
+              Tab(child: Text('월간', style: kTitleTextStyle)),
+              Tab(child: Text('연간', style: kTitleTextStyle)),
+            ],
+          ),
+          GestureDetector(
+            onTap: _toggleTopSheet,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    tabController.index == 0
+                        ? '$selectedMonth월'
+                        : '$selectedYear년',
+                    style: kTitleTextStyle,
+                  ),
+                  Icon(
+                    isTopSheetVisible
+                        ? Icons.arrow_drop_up
+                        : Icons.arrow_drop_down,
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
@@ -141,20 +166,18 @@ class _ReportScreenState extends State<ReportScreen>
   Widget _buildTopSheet(double appBarHeight) {
     return TopSheetSelector(
       isVisible: isTopSheetVisible,
-      topOffset: appBarHeight - 2,
+      topOffset: appBarHeight,
       selectedMonth: selectedMonth,
       selectedYear: selectedYear,
       tabIndex: tabIdx,
       onMonthSelected: (val) {
         setState(() {
           selectedMonth = val;
-          // isTopSheetVisible = false;
         });
       },
       onYearSelected: (val) {
         setState(() {
           selectedYear = val;
-          // isTopSheetVisible = false;
         });
       },
     );

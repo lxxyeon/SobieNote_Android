@@ -1,10 +1,15 @@
 import 'dart:ui';
 
 //primary colors
-const LIGHT_OLIVE = Color(0xFF5E6C2D);
-const OLIVE = Color(0xFF343C19);
-const DARK_OLIVE = Color(0xFF1F240F);
+const TAB_BG_COLOR = Color(0xFFf0faf9);
+const LIGHT_TEAL = Color(0xFFE6F4F1);
+const BG_COLOR = Color(0xFFE6F4F1);
+const TEAL = Color(0xFFB1E7E1);
+const DARK_TEAL = Color(0xFF21897e);
 
+const FONT_GRAY = Color(0xFF575757);
+const DARK_GRAY = Color(0xFF555555);
+const LIGHT_GRAY = Color(0xFFAAAAAA);
 //gray scale
 const GRAY_09 = Color(0xFFFCFDFC);
 const GRAY_08 = Color(0xFFF2F3F2);

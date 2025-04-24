@@ -14,14 +14,15 @@ class BtnTag extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          color: selected == true ? OLIVE : GRAY_09,
+          color: selected == true ? DARK_TEAL : GRAY_09,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Text(
               text,
               style: TextStyle(
                 fontSize: 16,
-                color: selected == true ? GRAY_09 : GRAY_06,
+                color: selected == true ? GRAY_09 : DARK_GRAY,
+                fontWeight: FontWeight.bold
               ),
             ),
           ),

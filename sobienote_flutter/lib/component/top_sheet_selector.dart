@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sobienote_flutter/common/const/colors.dart';
 
 class TopSheetSelector extends StatelessWidget {
   final bool isVisible;
@@ -37,10 +38,21 @@ class TopSheetSelector extends StatelessWidget {
           color: Colors.white,
           padding: const EdgeInsets.all(16),
           child:
-          tabIndex == 0
-              ? _buildGrid(context, 12, (i) => '${i + 1}월', selectedMonth, onMonthSelected)
-              : _buildGrid(context, 12, (i) => '${2014 + i}년', selectedYear, onYearSelected),
-
+              tabIndex == 0
+                  ? _buildGrid(
+                    context,
+                    12,
+                    (i) => '${i + 1}월',
+                    selectedMonth,
+                    onMonthSelected,
+                  )
+                  : _buildGrid(
+                    context,
+                    12,
+                    (i) => '${2014 + i}년',
+                    selectedYear,
+                    onYearSelected,
+                  ),
         ),
       ),
     );
@@ -53,27 +65,24 @@ class TopSheetSelector extends StatelessWidget {
     int selectedValue,
     Function(int) onSelect,
   ) {
-    return GridView.builder(
-      itemCount: count,
+    return GridView.count(
+      crossAxisCount: 4,
+      crossAxisSpacing: 6,
+      mainAxisSpacing: 6,
+      childAspectRatio: 3/2,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 6,
-        mainAxisSpacing: 6,
-        childAspectRatio: 1.0,
-      ),
-      itemBuilder: (context, i) {
-        final isSelected =
-            selectedValue ==
-            (labelBuilder == null ? i : (tabIndex == 0 ? i + 1 : 2014 + i));
+      children: List.generate(count, (i) {
+        final int value = tabIndex == 0 ? i + 1 : 2014 + i;
+        final bool isSelected = selectedValue == value;
+
         return GestureDetector(
-          onTap: () => onSelect(tabIndex == 0 ? i + 1 : 2014 + i),
+          onTap: () => onSelect(value),
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isSelected ? Colors.black : Colors.grey[300],
+              color: isSelected ? DARK_TEAL : LIGHT_GRAY,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -82,7 +91,7 @@ class TopSheetSelector extends StatelessWidget {
             ),
           ),
         );
-      },
+      }),
     );
   }
 }
