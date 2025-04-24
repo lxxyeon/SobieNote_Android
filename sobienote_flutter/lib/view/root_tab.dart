@@ -40,30 +40,39 @@ class _RootTabState extends State<RootTab> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return DefaultLayout(
       backgroundColor: controller.index == 1 ? LIGHT_TEAL : Colors.white,
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: controller.index == 1 ? Colors.white:  TAB_BG_COLOR,
-        selectedFontSize: 14,
-        unselectedFontSize: 14,
-        unselectedItemColor: DARK_GRAY,
-        selectedItemColor: DARK_TEAL,
-        type: BottomNavigationBarType.fixed,
-        onTap: (int index) {
-          setState(() {
-            controller.index = index;
-          });
-        },
-        currentIndex: index,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box_rounded),
-            label: '추가',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart_rounded),
-            label: '보고서',
-          ),
-        ],
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: controller.index == 1 ? Colors.white : TAB_BG_COLOR,
+          selectedFontSize: 14,
+          unselectedFontSize: 14,
+          unselectedItemColor: DARK_GRAY,
+          selectedItemColor: DARK_TEAL,
+          type: BottomNavigationBarType.fixed,
+          onTap: (int index) {
+            setState(() {
+              controller.index = index;
+            });
+          },
+          currentIndex: index,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: '홈',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add_box_rounded),
+              label: '추가',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart_rounded),
+              label: '보고서',
+            ),
+          ],
+        ),
       ),
       child: TabBarView(
         physics: NeverScrollableScrollPhysics(),

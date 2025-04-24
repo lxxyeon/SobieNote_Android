@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
 import 'package:sobienote_flutter/common/const/text_style.dart';
 import 'package:sobienote_flutter/component/report/report_category.dart';
+import 'package:sobienote_flutter/component/report/report_gauge.dart';
+import 'package:sobienote_flutter/component/report/report_rank.dart';
 
 import '../component/top_sheet_selector.dart';
 
@@ -84,11 +86,16 @@ class _ReportScreenState extends State<ReportScreen>
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
+            const SizedBox(height: 20),
             ReportCategory(),
             const SizedBox(height: 66),
             const Divider(),
             const SizedBox(height: 32),
-
+            ReportRank(),
+            const SizedBox(height: 66),
+            const Divider(),
+            const SizedBox(height: 32),
+            ReportGauge(percentage: 0.8),
             const SizedBox(height: 66),
             const Divider(),
             const SizedBox(height: 32),
