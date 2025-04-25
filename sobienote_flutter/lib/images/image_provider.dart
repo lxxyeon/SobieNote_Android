@@ -1,0 +1,19 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sobienote_flutter/images/model/board_image.dart';
+
+import '../common/const/data.dart';
+import '../common/provider/dio_provider.dart';
+import 'image_repository.dart';
+
+final imagesRepositoryProvider = Provider<ImageRepository>((ref) {
+  final dio = ref.watch(dioProvider);
+  return ImageRepository(dio, baseUrl: 'http://$ip/image');
+});
+
+final imagesProvider = FutureProvider.family<List<BoardImage>, (int year, int month, int memberId)>(
+      (ref, args) async {
+    final repo = ref.watch(imagesRepositoryProvider);
+    final response = await repo.getImages(args.$1, args.$2, args.$3);
+    return response.data;
+  },
+);

@@ -10,6 +10,7 @@ const DARK_TEAL = Color(0xFF21897e);
 const FONT_GRAY = Color(0xFF575757);
 const DARK_GRAY = Color(0xFF555555);
 const LIGHT_GRAY = Color(0xFFAAAAAA);
+const KEYPAD_GRAY = Color(0xFFE5E5EA);
 
 //gauge color
 const PINK = Color(0xFFF7CFD8);

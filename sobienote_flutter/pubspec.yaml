@@ -39,6 +39,11 @@ dependencies:
   permission_handler: ^12.0.0+1
   device_info_plus: ^11.4.0
   image_cropper: ^9.1.0
+  flutter_riverpod: ^2.6.1
+  retrofit: ^4.4.0
+  logger: ^2.4.0
+  json_annotation: ^4.9.0
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +55,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  retrofit_generator: '>=8.0.0 <10.0.0' # for Dart 3.3 use ^9.0.0
+  build_runner: ^2.3.3
+  json_serializable: ^6.8.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

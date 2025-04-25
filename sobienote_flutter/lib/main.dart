@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sobienote_flutter/common/const/colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sobienote_flutter/view/root_tab.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
