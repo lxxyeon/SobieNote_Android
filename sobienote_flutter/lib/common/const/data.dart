@@ -1,2 +1,2 @@
 const ACCESS_TOKEN_KEY = 'ACCESS_TOKEN';
-const ip = '34.64.225.87:8080';
+const ip = '34.47.91.193:8080';

@@ -7,6 +7,7 @@ import 'package:sobienote_flutter/images/model/board_image.dart';
 import 'package:sobienote_flutter/images/response/image_response.dart';
 
 import '../common/provider/dio_provider.dart';
+import '../common/response/base_response.dart';
 
 part 'image_repository.g.dart';
 
@@ -18,9 +19,12 @@ final imagesRepositoryProvider = Provider<ImageRepository>((ref) {
 @RestApi()
 abstract class ImageRepository {
   factory ImageRepository(Dio dio, {String baseUrl}) = _ImageRepository;
-  
+
   @GET('/{year}/{month}/{memberId}')
   @Headers({'accessToken': 'true'})
-  Future<ImageResponse> getImages(@Path('year') int year, @Path('month') int month, @Path('memberId') int memberId);
-
+  Future<BaseResponse<List<BoardImage>>> getImages(
+    @Path('year') int year,
+    @Path('month') int month,
+    @Path('memberId') int memberId,
+  );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
+import 'package:sobienote_flutter/goal/goal_provider.dart';
 import 'package:sobienote_flutter/view/setting_screen.dart';
 
 import '../common/const/text_style.dart';
@@ -21,6 +22,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int selectedMonth = DateTime.now().month;
   int selectedYear = DateTime.now().year;
 
+  late TextEditingController _goalController;
+
+  @override
+  void initState() {
+    super.initState();
+    _goalController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _goalController.dispose();
+    super.dispose();
+  }
+
   void _toggleTopSheet() {
     setState(() {
       isTopSheetVisible = !isTopSheetVisible;
@@ -38,7 +53,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final double appBarHeight =
         MediaQuery.of(context).padding.top + kToolbarHeight;
     final images = ref.watch(imagesProvider((selectedYear, selectedMonth, 13)));
-
+    final goal = ref.watch(goalProvider);
+    ref.listen(goalProvider, (previous, next) {
+      next.whenData((value) {
+        if (_goalController.text.isEmpty && value != null) {
+          _goalController.text = value;
+        }
+      });
+    });
     return Stack(
       children: [
         CustomScrollView(
@@ -84,21 +106,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                           const SizedBox(height: 9),
                           TextField(
+                            controller: _goalController,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                               color: Colors.black,
                             ),
                             decoration: InputDecoration(
-                              hintText: '목표를 적어주세요!',
+                              hintText: goal.value ?? '목표를 적어주세요!',
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 24,
                               ),
-                              suffixIcon: Icon(
-                                Icons.arrow_circle_up_rounded,
-                                color: Colors.white,
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.arrow_circle_up_rounded, color: Colors.white),
+                                onPressed: () async {
+                                  final text = _goalController.text.trim();
+                                  if (text.isNotEmpty) {
+                                    await ref.read(setGoalProvider(text));
+                                    FocusScope.of(context).unfocus();
+                                    ref.invalidate(goalProvider);
+                                  }
+                                },
                               ),
                               filled: true,
                               fillColor: TEAL,
