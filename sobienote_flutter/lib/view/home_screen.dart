@@ -52,7 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final double appBarHeight =
         MediaQuery.of(context).padding.top + kToolbarHeight;
-    final images = ref.watch(imagesProvider((selectedYear, selectedMonth, 13)));
+    final images = ref.watch(imagesProvider((selectedYear, selectedMonth)));
     final goal = ref.watch(goalProvider);
     ref.listen(goalProvider, (previous, next) {
       next.whenData((value) {

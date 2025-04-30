@@ -3,29 +3,48 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sobienote_flutter/board/request/board_request.dart';
 import 'package:sobienote_flutter/common/const/tags_data.dart';
 import 'package:sobienote_flutter/component/tag_selector.dart';
+import 'package:sobienote_flutter/images/image_provider.dart';
 
+import '../board/board_provider.dart';
 import '../common/const/colors.dart';
 import '../common/const/text_style.dart';
 
-class UploadScreen extends StatefulWidget {
+class UploadScreen extends ConsumerStatefulWidget {
   const UploadScreen({super.key});
 
   @override
-  State<UploadScreen> createState() => _UploadScreenState();
+  ConsumerState<UploadScreen> createState() => _UploadScreenState();
 }
 
-class _UploadScreenState extends State<UploadScreen> {
+class _UploadScreenState extends ConsumerState<UploadScreen> {
   int? _curCategory;
   int? _curEmotion;
   int? _curFactor;
   int? _curSatisfaction;
   XFile? _imageFile;
   final ImagePicker imagePicker = ImagePicker();
+  final TextEditingController _detailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _detailController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _detailController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickAndCropImage(ImageSource source) async {
     final XFile? pickedFile = await imagePicker.pickImage(source: source);
@@ -104,16 +123,15 @@ class _UploadScreenState extends State<UploadScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    final board = ref.read(boardProvider);
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(
               height: kToolbarHeight,
-              child: Text(
-                '소비 기록',
-                style: kTitleTextStyle,
-              ),
+              child: Text('소비 기록', style: kTitleTextStyle),
             ),
             renderUploadPic(),
             const SizedBox(height: 52),
@@ -159,12 +177,67 @@ class _UploadScreenState extends State<UploadScreen> {
               width: screenWidth * 0.9,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: TEAL,
+                  backgroundColor: DARK_TEAL,
                   shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.white),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  if (_imageFile == null ||
+                      _curCategory == null ||
+                      _curEmotion == null ||
+                      _curFactor == null ||
+                      _curSatisfaction == null ||
+                      _detailController.text.isEmpty) {
+                    _showMissingDataDialog();
+                  } else {
+                    try {
+                      final resp = await board.postBoard(
+                        BoardRequest(
+                          contents: _detailController.text,
+                          categories: categories[_curCategory!],
+                          emotions: emotions[_curEmotion!],
+                          factors: factors[_curFactor!],
+                          satisfactions: int.parse(
+                            satisfactions[_curSatisfaction!],
+                          ),
+                          file: File(_imageFile!.path),
+                        ),
+                      );
+                      if (resp.success) {
+                        await showDialog(
+                          context: context,
+                          builder:
+                              (context) => CupertinoAlertDialog(
+                                title: Text('기록이 완료되었습니다.'),
+                                actions: [
+                                  CupertinoDialogAction(
+                                    child: Text('확인'),
+                                    onPressed: () {
+                                      ref.invalidate(imagesProvider((DateTime.now().year, DateTime.now().month)));
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
+                        );
+
+                        // 🎯 상태 초기화
+                        setState(() {
+                          _imageFile = null;
+                          _curCategory = null;
+                          _curEmotion = null;
+                          _curFactor = null;
+                          _curSatisfaction = null;
+                          _detailController.clear();
+                        });
+                      }
+                    } catch (e) {
+                      print(e);
+                    }
+                  }
+                },
                 child: Text('기록하기', style: TextStyle(color: GRAY_09)),
               ),
             ),
@@ -206,21 +279,53 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget renderDetail() {
     return Column(
       children: [
-        Text(
-          '오늘의 소비에 대해 더 자세히 기록해 볼까요?',
-          style: kTitleTextStyle,
-        ),
+        Text('오늘의 소비에 대해 더 자세히 기록해 볼까요?', style: kTitleTextStyle),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: TextField(
+            controller: _detailController,
             decoration: InputDecoration(
               hintText: '물건의 특징이나 구매 동기 등을 적어보세요!',
               hintStyle: TextStyle(color: GRAY_06),
+              counterStyle:
+                  _detailController.text.length == 40
+                      ? TextStyle(color: Colors.red)
+                      : TextStyle(color: FONT_GRAY),
             ),
             maxLength: 40,
           ),
         ),
       ],
+    );
+  }
+
+  void _showMissingDataDialog() {
+    String text = '입력값이 부족합니다.';
+    if (_imageFile == null)
+      text = '사진을 추가해주세요';
+    else if (_curCategory == null)
+      text = '카테고리를 기록해주세요';
+    else if (_curEmotion == null)
+      text = '감정을 기록해주세요';
+    else if (_curFactor == null)
+      text = '가치를 기록해주세요';
+    else if (_curSatisfaction == null)
+      text = '만족도를 기록해주세요';
+    else if (_detailController.text.isEmpty)
+      text = '상세 기록 내용을 기록해주세요';
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(text),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('확인'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

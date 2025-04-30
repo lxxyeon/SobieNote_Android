@@ -25,6 +25,11 @@ class CustomInterceptor extends Interceptor {
     print(err);
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
 
+    if(err.response?.statusCode == 404) {
+      print('404');
+      return;
+    }
+
     if (accessToken == null) {
       handler.reject(err);
     }
@@ -46,7 +51,7 @@ class CustomInterceptor extends Interceptor {
       options.headers.remove('accessToken');
 
       // final token = await storage.read(key: ACCESS_TOKEN_KEY);
-      final token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb2JpZU5vdGUiLCJpYXQiOjE3NDU1NTU2MTksImV4cCI6MTc3NzA5MTYxOSwiaWQiOjN9.U1vOKTgRC9qv6f_kcYTK6WNLgu1i3mO9sVpN3L-GZUU';
+      final token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb2JpZU5vdGUiLCJpYXQiOjE3NDU5NzEyNzUsImV4cCI6MTc3NzUwNzI3NSwiaWQiOjUyfQ.53l4DuZM1gERoSG5AzK75vwrEHzhRCA_aDqrYvEaTJI';
 
       options.headers.addAll({'authorization': 'Bearer $token'});
     }
