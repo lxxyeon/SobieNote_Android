@@ -18,7 +18,8 @@ final boardProvider = Provider<BoardNotifier>((ref) {
 class BoardNotifier {
   final BoardRepository repository;
   final FlutterSecureStorage storage;
-  BoardNotifier({required this.repository,required this.storage});
+
+  BoardNotifier({required this.repository, required this.storage});
 
   Future<BaseResponse<BoardPostResponse>> postBoard(BoardRequest request) {
     // int memberId = storage.read(key: 'memberId') as int;
@@ -37,18 +38,29 @@ class BoardNotifier {
     );
   }
 
-  Future<BaseResponse<BoardResponse>> getBoard(int boardId) {
-    return repository.getBoard(boardId);
+  Future<BoardResponse> getBoard(int boardId) async {
+    final resp = await repository.getBoard(boardId);
+    return resp.data;
   }
 
-  Future<BaseResponse<String>> deleteBoard(int boardId) {
+  Future<BaseResponse<bool>> deleteBoard(int boardId) {
     return repository.deleteBoard(boardId);
   }
 
-  Future<BaseResponse<BoardResponse>> patchBoard(
+  Future<BaseResponse<BoardPostResponse>> patchBoard(
     int boardId,
     BoardRequest request,
   ) {
-    return repository.patchBoard(boardId, request);
+    return repository.patchBoard(
+      boardId,
+      FormData.fromMap({
+        'file': MultipartFile.fromFileSync(request.file!.path),
+        'contents': request.contents,
+        'categories': request.categories,
+        'emotions': request.emotions,
+        'factors': request.factors,
+        'satisfactions': request.satisfactions,
+      }),
+    );
   }
 }

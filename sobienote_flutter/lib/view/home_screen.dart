@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
+import 'package:sobienote_flutter/component/board_selection.dart';
+import 'package:sobienote_flutter/component/default_layout.dart';
 import 'package:sobienote_flutter/goal/goal_provider.dart';
 import 'package:sobienote_flutter/view/setting_screen.dart';
 
@@ -120,7 +122,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 fontSize: 24,
                               ),
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.arrow_circle_up_rounded, color: Colors.white),
+                                icon: Icon(
+                                  Icons.arrow_circle_up_rounded,
+                                  color: Colors.white,
+                                ),
                                 onPressed: () async {
                                   final text = _goalController.text.trim();
                                   if (text.isNotEmpty) {
@@ -156,7 +161,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             if (images.isLoading)
               SliverFillRemaining(child: CircularProgressIndicator())
-            else if (images.hasError || images.value == null || images.value!.isEmpty)
+            else if (images.hasError ||
+                images.value == null ||
+                images.value!.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Image.asset('assets/images/nullImg_G.png'),
@@ -164,7 +171,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             else if (images.value!.isNotEmpty)
               SliverGrid(
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  return Image.network(images.value![index].imagePath);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => DefaultLayout(
+                                backgroundColor: LIGHT_TEAL,
+                                child: BoardSelection(
+                                  boardId: images.value![index].boardId,
+                                ),
+                              ),
+                        ),
+                      );
+                    },
+                    child: Image.network(images.value![index].imagePath),
+                  );
                 }, childCount: images.value!.length),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,

@@ -4,7 +4,7 @@ part 'board_response.g.dart';
 
 @JsonSerializable()
 class BoardResponse {
-  final String content;
+  final String contents;
   final String categories;
   final String factors;
   final String emotions;
@@ -12,7 +12,7 @@ class BoardResponse {
   final String createdDate;
 
   BoardResponse({
-    required this.content,
+    required this.contents,
     required this.categories,
     required this.factors,
     required this.emotions,
@@ -20,6 +20,8 @@ class BoardResponse {
     required this.createdDate,
   });
 
-  factory BoardResponse.fromJson(Map<String, dynamic> json) => _$BoardResponseFromJson(json);
+  factory BoardResponse.fromJson(Map<String, dynamic> json) =>
+      _$BoardResponseFromJson(json);
+
   Map<String, dynamic> toJson() => _$BoardResponseToJson(this);
 }

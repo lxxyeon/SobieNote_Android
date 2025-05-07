@@ -8,7 +8,7 @@ part of 'board_response.dart';
 
 BoardResponse _$BoardResponseFromJson(Map<String, dynamic> json) =>
     BoardResponse(
-      content: json['content'] as String,
+      contents: json['contents'] as String,
       categories: json['categories'] as String,
       factors: json['factors'] as String,
       emotions: json['emotions'] as String,
@@ -18,7 +18,7 @@ BoardResponse _$BoardResponseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$BoardResponseToJson(BoardResponse instance) =>
     <String, dynamic>{
-      'content': instance.content,
+      'contents': instance.contents,
       'categories': instance.categories,
       'factors': instance.factors,
       'emotions': instance.emotions,

@@ -2,7 +2,6 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
-import 'package:sobienote_flutter/board/request/board_request.dart';
 import 'package:sobienote_flutter/board/response/board_post_response.dart';
 import 'package:sobienote_flutter/board/response/board_response.dart';
 
@@ -35,12 +34,12 @@ abstract class BoardRepository {
 
   @DELETE('/{boardId}')
   @Headers({'accessToken': 'true'})
-  Future<BaseResponse<String>> deleteBoard(@Path('boardId') int boardId);
+  Future<BaseResponse<bool>> deleteBoard(@Path('boardId') int boardId);
 
   @PATCH('/{boardId}')
   @Headers({'accessToken': 'true'})
-  Future<BaseResponse<BoardResponse>> patchBoard(
+  Future<BaseResponse<BoardPostResponse>> patchBoard(
     @Path('boardId') int boardId,
-    @Body() BoardRequest request,
+    @Body() FormData formData,
   );
 }

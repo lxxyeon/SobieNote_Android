@@ -4,7 +4,6 @@ import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:sobienote_flutter/common/const/data.dart';
 import 'package:sobienote_flutter/images/model/board_image.dart';
-import 'package:sobienote_flutter/images/response/image_response.dart';
 
 import '../common/provider/dio_provider.dart';
 import '../common/response/base_response.dart';
@@ -27,4 +26,8 @@ abstract class ImageRepository {
     @Path('month') int month,
     @Path('memberId') int memberId,
   );
+
+  @GET('/{boardId}')
+  @Headers({'accessToken': 'true'})
+  Future<BaseResponse<BoardImage>> getBoardImage(@Path('boardId') int boardId);
 }

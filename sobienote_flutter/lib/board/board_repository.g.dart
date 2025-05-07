@@ -88,13 +88,13 @@ class _BoardRepository implements BoardRepository {
   }
 
   @override
-  Future<BaseResponse<String>> deleteBoard(int boardId) async {
+  Future<BaseResponse<bool>> deleteBoard(int boardId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BaseResponse<String>>(
+    final _options = _setStreamType<BaseResponse<bool>>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -105,11 +105,11 @@ class _BoardRepository implements BoardRepository {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponse<String> _value;
+    late BaseResponse<bool> _value;
     try {
-      _value = BaseResponse<String>.fromJson(
+      _value = BaseResponse<bool>.fromJson(
         _result.data!,
-        (json) => json as String,
+        (json) => json as bool,
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -119,17 +119,16 @@ class _BoardRepository implements BoardRepository {
   }
 
   @override
-  Future<BaseResponse<BoardResponse>> patchBoard(
+  Future<BaseResponse<BoardPostResponse>> patchBoard(
     int boardId,
-    BoardRequest request,
+    FormData formData,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
-    final _data = <String, dynamic>{};
-    _data.addAll(request.toJson());
-    final _options = _setStreamType<BaseResponse<BoardResponse>>(
+    final _data = formData;
+    final _options = _setStreamType<BaseResponse<BoardPostResponse>>(
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -140,11 +139,11 @@ class _BoardRepository implements BoardRepository {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponse<BoardResponse> _value;
+    late BaseResponse<BoardPostResponse> _value;
     try {
-      _value = BaseResponse<BoardResponse>.fromJson(
+      _value = BaseResponse<BoardPostResponse>.fromJson(
         _result.data!,
-        (json) => BoardResponse.fromJson(json as Map<String, dynamic>),
+        (json) => BoardPostResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
