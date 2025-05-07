@@ -16,6 +16,14 @@ const KEYPAD_GRAY = Color(0xFFE5E5EA);
 const PINK = Color(0xFFF7CFD8);
 const DARK_PINK = Color(0xFFF05A7E);
 
+//pie color
+const PIE1 = Color(0xFFb1e7e1);
+const PIE2 = Color(0xFFc2eaff);
+const PIE3 = Color(0xFFe1e0f4);
+const PIE4 = Color(0xFFf0dbef);
+const PIE5 = Color(0xFFfeebd6);
+const PIE6 = Color(0xFFEBE8DB);
+
 //gray scale
 const GRAY_09 = Color(0xFFFCFDFC);
 const GRAY_08 = Color(0xFFF2F3F2);

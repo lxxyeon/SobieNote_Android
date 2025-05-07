@@ -3,9 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
 import 'package:sobienote_flutter/common/const/text_style.dart';
-
+import 'package:sobienote_flutter/common/response/base_response.dart';
 class ReportGauge extends StatelessWidget {
-  final double percentage;
+  final Future<BaseResponse<double>> percentage;
 
   const ReportGauge({super.key, required this.percentage});
 
@@ -14,26 +14,48 @@ class ReportGauge extends StatelessWidget {
     return Column(
       children: [
         Align(
-            alignment: Alignment.centerLeft,
-            child: Text('소비 목표를 이만큼 달성했어요', style: kTitleTextStyle)),
+          alignment: Alignment.centerLeft,
+          child: Text('소비 목표를 이만큼 달성했어요', style: kTitleTextStyle),
+        ),
         const SizedBox(height: 60),
-        Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            CustomPaint(
-              size: const Size(200, 100), // 너비 200, 높이 100
-              painter: _GaugePainter(percentage),
-            ),
-            Text(
-              '${(percentage * 100).toInt()}%',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ],
+        FutureBuilder<BaseResponse<double>>(
+          future: percentage,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const CircularProgressIndicator();
+            }
+
+            if (snapshot.hasError) {
+              return Text('에러 발생: ${snapshot.error}');
+            }
+
+            final raw = snapshot.data?.data ?? 0.0;
+            final value = raw.clamp(0.0, 100.0);
+            final percent = value / 100;
+
+            return Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                CustomPaint(
+                  size: const Size(200, 100),
+                  painter: _GaugePainter(percent),
+                ),
+                Text(
+                  '${value.toStringAsFixed(0)}%',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ],
     );
   }
 }
+
 
 class _GaugePainter extends CustomPainter {
   final double percentage;

@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
 import 'package:sobienote_flutter/common/const/text_style.dart';
 import 'package:sobienote_flutter/component/report/report_category.dart';
 import 'package:sobienote_flutter/component/report/report_gauge.dart';
 import 'package:sobienote_flutter/component/report/report_rank.dart';
+import 'package:sobienote_flutter/report/report_provider.dart';
 
+import '../component/report/report_pie_chart.dart';
 import '../component/top_sheet_selector.dart';
 
-class ReportScreen extends StatefulWidget {
+class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
 
   @override
-  State<ReportScreen> createState() => _ReportScreenState();
+  ConsumerState<ReportScreen> createState() => _ReportScreenState();
 }
 
-class _ReportScreenState extends State<ReportScreen>
+class _ReportScreenState extends ConsumerState<ReportScreen>
     with TickerProviderStateMixin {
   bool isTopSheetVisible = false;
-  int selectedMonth = DateTime
-      .now()
-      .month;
-  int selectedYear = DateTime
-      .now()
-      .year;
+  int selectedMonth = DateTime.now().month;
+  int selectedYear = DateTime.now().year;
   int tabIdx = 0;
   late TabController tabController;
 
@@ -43,14 +42,10 @@ class _ReportScreenState extends State<ReportScreen>
     setState(() {
       if (tabController.index == 0) {
         tabIdx = 0;
-        selectedMonth = DateTime
-            .now()
-            .month;
+        selectedMonth = DateTime.now().month;
       } else {
         tabIdx = 0;
-        selectedYear = DateTime
-            .now()
-            .year;
+        selectedYear = DateTime.now().year;
       }
     });
   }
@@ -64,10 +59,7 @@ class _ReportScreenState extends State<ReportScreen>
   @override
   Widget build(BuildContext context) {
     final double appBarHeight =
-        MediaQuery
-            .of(context)
-            .padding
-            .top + kToolbarHeight + kTextTabBarHeight;
+        MediaQuery.of(context).padding.top + kToolbarHeight + kTextTabBarHeight;
 
     return Stack(
       children: [
@@ -80,6 +72,7 @@ class _ReportScreenState extends State<ReportScreen>
   }
 
   Widget _reportBody(double appBarHeight) {
+    final report = ref.watch(reportNotifierProvider);
     return NestedScrollView(
       headerSliverBuilder: (_, __) => [_buildSliverAppBar()],
       body: SingleChildScrollView(
@@ -87,19 +80,21 @@ class _ReportScreenState extends State<ReportScreen>
         child: Column(
           children: [
             const SizedBox(height: 20),
-            ReportCategory(),
+            ReportCategory(
+              categories: report.getCategories(selectedYear, selectedMonth),
+            ),
             const SizedBox(height: 66),
             const Divider(),
             const SizedBox(height: 32),
-            ReportRank(),
+            ReportRank(factors: report.getFactors(selectedYear, selectedMonth)),
             const SizedBox(height: 66),
             const Divider(),
             const SizedBox(height: 32),
-            ReportGauge(percentage: 0.8),
-            const SizedBox(height: 66),
+            ReportPieChart(emotions: report.getEmotions(selectedYear, selectedMonth),),
             const Divider(),
             const SizedBox(height: 32),
-
+            ReportGauge(percentage: report.getAvgSatisfaction(selectedYear, selectedMonth)),
+            const SizedBox(height: 66),
           ],
         ),
       ),
@@ -146,7 +141,7 @@ class _ReportScreenState extends State<ReportScreen>
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -189,4 +184,5 @@ class _ReportScreenState extends State<ReportScreen>
       },
     );
   }
+
 }

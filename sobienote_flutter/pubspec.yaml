@@ -45,6 +45,7 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_secure_storage: ^9.2.4
   path: ^1.8.0
+  fl_chart: ^0.71.0
 
 dev_dependencies:
   flutter_test:
