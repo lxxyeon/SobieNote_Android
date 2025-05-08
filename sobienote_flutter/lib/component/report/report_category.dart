@@ -20,66 +20,111 @@ class ReportCategory extends StatelessWidget {
 
         final items = snapshot.data!.data;
         items.sort((a, b) => b.value_cnt.compareTo(a.value_cnt));
+        final top3Keywords = getTop3Ranks(items);
         final half = (items.length / 2).ceil();
         final leftList = items.sublist(0, half);
         final rightList = items.sublist(half);
 
-        return SizedBox(
-          height: 350,
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('이번 달엔 여기에 많이 썼어요', style: kTitleTextStyle),
-              const SizedBox(height: 30),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildColumn(leftList, CrossAxisAlignment.end, TextAlign.right),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('이번 달엔 여기에 많이 썼어요', style: kTitleTextStyle),
+            const SizedBox(height: 30),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildColumn(
+                    leftList,
+                    CrossAxisAlignment.end,
+                    TextAlign.right,
+                    top3Keywords,
                   ),
-                  Container(
-                    height: 250,
-                    width: 1,
-                    color: GRAY_06,
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                ),
+                Container(
+                  height: 250,
+                  width: 1,
+                  color: GRAY_06,
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                ),
+                Expanded(
+                  child: _buildColumn(
+                    rightList,
+                    CrossAxisAlignment.start,
+                    TextAlign.left,
+                    {},
                   ),
-                  Expanded(
-                    child: _buildColumn(rightList, CrossAxisAlignment.start, TextAlign.left),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         );
       },
     );
   }
 
+  Map<String, int> getTop3Ranks(List<ReportResponse> items) {
+    final filtered = items.where((e) => e.value_cnt > 0).toList();
+    filtered.sort((a, b) => b.value_cnt.compareTo(a.value_cnt));
+
+    final Map<String, int> topRanks = {};
+    int? lastCnt;
+    int rank = 0;
+
+    for (final item in filtered) {
+      if (topRanks.length >= 3) break;
+
+      if (item.value_cnt != lastCnt) {
+        rank = topRanks.length + 1;
+      }
+      topRanks[item.keyword] = rank;
+      lastCnt = item.value_cnt;
+    }
+
+    return topRanks;
+  }
+
+
   Widget _buildColumn(
-      List<ReportResponse> categories,
-      CrossAxisAlignment alignment,
-      TextAlign textAlign,
-      ) {
+    List<ReportResponse> categories,
+    CrossAxisAlignment alignment,
+    TextAlign textAlign,
+      Map<String, int> topRanks,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: alignment,
-      children: categories.map((item) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 7.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                item.keyword,
-                textAlign: textAlign,
-                style: const TextStyle(fontSize: 16),
+      children:
+          categories.map((item) {
+            final rank = topRanks[item.keyword];
+            final isTop3 = rank != null;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 7.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isTop3)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6.0),
+                      child: Image.asset(
+                        'assets/images/rank${rank}.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                  Text(
+                    item.keyword,
+                    textAlign: textAlign,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  Expanded(child: Container()),
+                  Text(
+                    '${item.value_cnt}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
-              Expanded(child: Container()),
-              Text('${item.value_cnt}', style: const TextStyle(fontSize: 16)),
-            ],
-          ),
-        );
-      }).toList(),
+            );
+          }).toList(),
     );
   }
 }
