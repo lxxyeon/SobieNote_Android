@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -176,9 +177,18 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
       final pngBytes = byteData!.buffer.asUint8List();
 
       await saveImageToGallery(pngBytes);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("앨범에 저장되었어요!")));
+      showCupertinoDialog(context: context, builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('보고서 저장 완료'),
+          content: const Text('앨범에 보고서를 저장했습니다'),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text('확인'),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      });
     } catch (e) {
       print("저장 실패: $e");
     }
