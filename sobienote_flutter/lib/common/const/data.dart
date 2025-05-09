@@ -1,2 +1,6 @@
 const ACCESS_TOKEN_KEY = 'ACCESS_TOKEN';
+const EMAIL_KEY = 'EMAIL';
+const NAME_KEY = 'NAME';
+const SOCIAL_TYPE_KEY = 'SOCIAL_TYPE';
+const MEMBER_ID_KEY = 'MEMBER_ID';
 const ip = '34.47.91.193:8080';

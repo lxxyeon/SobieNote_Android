@@ -55,10 +55,7 @@ class CustomInterceptor extends Interceptor {
     if (options.headers['accessToken'] == 'true') {
       options.headers.remove('accessToken');
 
-      // final token = await storage.read(key: ACCESS_TOKEN_KEY);
-      final token =
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb2JpZU5vdGUiLCJpYXQiOjE3NDY1MDI0NzYsImV4cCI6MTc3ODAzODQ3NiwiaWQiOjUyfQ.C8CqrNYYMRmjEkG7oQcBVV4mIAnQ70WgkayKHgakacQ';
-
+      final token = await storage.read(key: ACCESS_TOKEN_KEY);
       options.headers.addAll({'authorization': 'Bearer $token'});
     }
 

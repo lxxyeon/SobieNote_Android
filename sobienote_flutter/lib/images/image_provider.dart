@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sobienote_flutter/common/provider/secure_storage.dart';
 import 'package:sobienote_flutter/images/model/board_image.dart';
 
 import '../common/const/data.dart';
@@ -13,8 +14,8 @@ final imagesRepositoryProvider = Provider<ImageRepository>((ref) {
 final imagesProvider = FutureProvider.family<List<BoardImage>, (int year, int month)>(
       (ref, args) async {
     final repo = ref.watch(imagesRepositoryProvider);
-    //todo 추후 바꾸기
-    final response = await repo.getImages(args.$1, args.$2, 52);
+    final memberId = await ref.watch(secureStorageProvider).read(key: MEMBER_ID_KEY);
+    final response = await repo.getImages(args.$1, args.$2, int.parse(memberId!));
     return response.data;
   },
 );

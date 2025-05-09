@@ -7,6 +7,7 @@ import '../common/const/colors.dart';
 import '../component/default_layout.dart';
 
 class RootTab extends StatefulWidget {
+  static String get routeName => 'home';
   const RootTab({super.key});
 
   @override

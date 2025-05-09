@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
+import 'package:sobienote_flutter/user/request/social_login_request.dart';
 
-class OnboardingScreen extends StatelessWidget {
+import '../user/user_provider.dart';
+
+class OnboardingScreen extends ConsumerWidget {
+  static String get routeName => 'onboarding';
   const OnboardingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: DARK_TEAL,
       body: Column(
@@ -16,7 +21,9 @@ class OnboardingScreen extends StatelessWidget {
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () async {
+                    ref.read(userProvider.notifier).login(request: SocialLoginRequest(email: '', name: '', type: SocialType.KAKAO));
+                  },
                   child: Image.asset('assets/images/kakao_login.png'),
                 ),
                 const SizedBox(height: 20),

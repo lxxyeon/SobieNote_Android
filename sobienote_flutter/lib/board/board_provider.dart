@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sobienote_flutter/board/request/board_request.dart';
 import 'package:sobienote_flutter/board/response/board_post_response.dart';
 import 'package:sobienote_flutter/board/response/board_response.dart';
+import 'package:sobienote_flutter/common/const/data.dart';
 
 import '../common/provider/secure_storage.dart';
 import '../common/response/base_response.dart';
@@ -21,12 +22,10 @@ class BoardNotifier {
 
   BoardNotifier({required this.repository, required this.storage});
 
-  Future<BaseResponse<BoardPostResponse>> postBoard(BoardRequest request) {
-    // int memberId = storage.read(key: 'memberId') as int;
-    //todo memberId로 바꿔야함
-    final int memberId = 52;
+  Future<BaseResponse<BoardPostResponse>> postBoard(BoardRequest request) async{
+    String? memberId = await storage.read(key: MEMBER_ID_KEY);
     return repository.postBoard(
-      memberId,
+      int.parse(memberId!),
       FormData.fromMap({
         'file': MultipartFile.fromFileSync(request.file!.path),
         'contents': request.contents,

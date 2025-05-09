@@ -12,9 +12,11 @@ import 'package:sobienote_flutter/component/report/report_gauge.dart';
 import 'package:sobienote_flutter/component/report/report_rank.dart';
 import 'package:sobienote_flutter/report/report_provider.dart';
 
+import '../common/response/base_response.dart';
 import '../common/util/save_share.dart';
 import '../component/report/report_pie_chart.dart';
 import '../component/top_sheet_selector.dart';
+import '../report/response/report_response.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -32,15 +34,25 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
   late TabController tabController;
   final GlobalKey captureKey = GlobalKey();
 
+  late Future<BaseResponse<List<ReportResponse>>> _categoriesFuture;
+  late Future<BaseResponse<List<ReportResponse>>> _factorsFuture;
+  late Future<BaseResponse<List<ReportResponse>>> _emotionsFuture;
+  late Future<BaseResponse<double>> _avgSatisfactionFuture;
+
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 2, vsync: this);
-    tabController.addListener(() {
-      setState(() {
-        tabIdx = tabController.index;
-      });
-    });
+    tabController.addListener(() => setState(() => tabIdx = tabController.index));
+    _loadData();
+  }
+
+  void _loadData() {
+    final report = ref.read(reportNotifierProvider);
+    _categoriesFuture = report.getCategories(selectedYear, selectedMonth);
+    _factorsFuture = report.getFactors(selectedYear, selectedMonth);
+    _emotionsFuture = report.getEmotions(selectedYear, selectedMonth);
+    _avgSatisfactionFuture = report.getAvgSatisfaction(selectedYear, selectedMonth);
   }
 
   void _toggleTopSheet() {
@@ -64,7 +76,6 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
   }
 
   Widget _reportBody(double appBarHeight) {
-    final report = ref.watch(reportNotifierProvider);
     return NestedScrollView(
       headerSliverBuilder: (_, __) => [_buildSliverAppBar()],
       body: SingleChildScrollView(
@@ -78,32 +89,18 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    ReportCategory(
-                      categories: report.getCategories(
-                        selectedYear,
-                        selectedMonth,
-                      ),
-                    ),
+                    ReportCategory(categories: _categoriesFuture),
                     const SizedBox(height: 32),
                     const Divider(),
                     const SizedBox(height: 32),
-                    ReportRank(
-                      factors: report.getFactors(selectedYear, selectedMonth),
-                    ),
+                    ReportRank(factors: _factorsFuture),
                     const SizedBox(height: 32),
                     const Divider(),
                     const SizedBox(height: 32),
-                    ReportPieChart(
-                      emotions: report.getEmotions(selectedYear, selectedMonth),
-                    ),
+                    ReportPieChart(emotions: _emotionsFuture),
                     const Divider(),
                     const SizedBox(height: 32),
-                    ReportGauge(
-                      percentage: report.getAvgSatisfaction(
-                        selectedYear,
-                        selectedMonth,
-                      ),
-                    ),
+                    ReportGauge(percentage: _avgSatisfactionFuture),
                     const SizedBox(height: 66),
                   ],
                 ),
@@ -282,8 +279,14 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
       selectedMonth: selectedMonth,
       selectedYear: selectedYear,
       tabIndex: tabIdx,
-      onMonthSelected: (val) => setState(() => selectedMonth = val),
-      onYearSelected: (val) => setState(() => selectedYear = val),
+      onMonthSelected: (val) => setState(() {
+        selectedMonth = val;
+        _loadData();
+      }),
+      onYearSelected: (val) => setState(() {
+        selectedYear = val;
+        _loadData();
+      }),
     );
   }
 }

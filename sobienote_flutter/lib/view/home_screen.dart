@@ -160,7 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
             if (images.isLoading)
-              SliverFillRemaining(child: CircularProgressIndicator())
+              SliverFillRemaining(child: Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator())))
             else if (images.hasError ||
                 images.value == null ||
                 images.value!.isEmpty)
