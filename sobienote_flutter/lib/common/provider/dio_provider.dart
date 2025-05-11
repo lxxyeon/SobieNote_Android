@@ -2,7 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sobienote_flutter/common/provider/secure_storage.dart';
+import 'package:sobienote_flutter/user/model/user_model.dart';
 
+import '../../user/request/social_login_request.dart';
+import '../../user/user_provider.dart';
 import '../const/data.dart';
 
 final dioProvider = Provider<Dio>((ref) {
@@ -25,14 +28,45 @@ class CustomInterceptor extends Interceptor {
     );
     print(err);
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+    if (accessToken == null) {
+      handler.reject(err);
+    }
 
     if (err.response?.statusCode == 404) {
-      print('404');
       return;
     }
 
-    if (accessToken == null) {
-      handler.reject(err);
+    if (err.response?.statusCode == 403) {
+      final email = await storage.read(key: EMAIL_KEY);
+      final name = await storage.read(key: NAME_KEY);
+      final type = await storage.read(key: SOCIAL_TYPE_KEY);
+
+      if (email == null || name == null || type == null) {
+        handler.reject(err);
+        return;
+      }
+
+      final resp = await ref
+          .read(userProvider.notifier)
+          .login(
+            request: SocialLoginRequest(
+              email: email,
+              name: name,
+              type: SocialType.getByName(type!),
+            ),
+          );
+
+      if (resp is UserModel) {
+        final options = err.requestOptions;
+        final dio = Dio();
+        String accessToken = await storage.read(key: ACCESS_TOKEN_KEY) ?? '';
+        options.headers.addAll({'authorization': 'Bearer $accessToken'});
+        final response = await dio.fetch(options);
+        handler.resolve(response);
+      } else if(resp is UserModelError) {
+        return;
+      }
+      return;
     }
   }
 

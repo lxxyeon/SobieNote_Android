@@ -28,8 +28,10 @@ class OnboardingScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 GestureDetector(
-                  onTap: () {},
-                  child: Image.asset('assets/images/apple_login.png'),
+                  onTap: () {
+                    ref.read(userProvider.notifier).login(request: SocialLoginRequest(email: '', name: '', type: SocialType.GOOGLE));
+                  },
+                  child: Image.asset('assets/images/google_login.png'),
                 ),
               ],
             ),

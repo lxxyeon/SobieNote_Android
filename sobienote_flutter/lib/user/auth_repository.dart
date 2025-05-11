@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:sobienote_flutter/common/provider/secure_storage.dart';
 import 'package:sobienote_flutter/user/request/social_login_request.dart';
@@ -66,6 +67,20 @@ class AuthRepository {
         name: user.kakaoAccount!.profile!.nickname!,
         email: user.kakaoAccount!.email!,
         type: request.type,
+      );
+    }
+
+    if (request.type == SocialType.GOOGLE) {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? account = await googleSignIn.signIn();
+      if (account == null) {
+        throw Exception('Google 로그인 실패 또는 취소됨');
+      }
+
+      request = SocialLoginRequest(
+        name: account.displayName ?? '',
+        email: account.email,
+        type: SocialType.GOOGLE,
       );
     }
 
