@@ -43,16 +43,22 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
   void initState() {
     super.initState();
     tabController = TabController(length: 2, vsync: this);
-    tabController.addListener(() => setState(() => tabIdx = tabController.index));
-    _loadData();
+    tabController.addListener(() {
+      setState(() {
+        tabIdx = tabController.index;
+        _loadData();
+      });
+    });    _loadData();
   }
 
   void _loadData() {
     final report = ref.read(reportNotifierProvider);
-    _categoriesFuture = report.getCategories(selectedYear, selectedMonth);
-    _factorsFuture = report.getFactors(selectedYear, selectedMonth);
-    _emotionsFuture = report.getEmotions(selectedYear, selectedMonth);
-    _avgSatisfactionFuture = report.getAvgSatisfaction(selectedYear, selectedMonth);
+    final int? month = (tabIdx == 0) ? selectedMonth : null;
+
+    _categoriesFuture = report.getCategories(selectedYear, month);
+    _factorsFuture = report.getFactors(selectedYear, month);
+    _emotionsFuture = report.getEmotions(selectedYear, month);
+    _avgSatisfactionFuture = report.getAvgSatisfaction(selectedYear, month);
   }
 
   void _toggleTopSheet() {
