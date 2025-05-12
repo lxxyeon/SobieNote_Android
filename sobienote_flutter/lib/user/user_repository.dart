@@ -21,5 +21,10 @@ abstract class UserRepository {
   factory UserRepository(Dio dio, {String baseUrl}) = _UserRepository;
 
   @POST('/social')
-  Future<BaseResponse<OAuthResponse>> socialLogin(@Body() SocialLoginRequest request);
+  Future<BaseResponse<OAuthResponse>> socialLogin(
+    @Body() SocialLoginRequest request,
+  );
+
+  @DELETE('/{memberId}')
+  Future<BaseResponse<int>> deleteAccount(@Path('memberId') int memberId);
 }

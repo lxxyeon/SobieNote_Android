@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -10,30 +9,20 @@ import 'package:sobienote_flutter/user/response/oauth_response.dart';
 import 'package:sobienote_flutter/user/user_repository.dart';
 
 import '../common/const/data.dart';
-import '../common/provider/dio_provider.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  final dio = ref.watch(dioProvider);
   final storage = ref.watch(secureStorageProvider);
   final userRepository = ref.watch(userRepositoryProvider);
-  return AuthRepository(dio: dio,
-      baseUrl: 'http://$ip/member',
-      storage: storage,
-      userRepository: userRepository);
+  return AuthRepository(storage: storage, userRepository: userRepository);
 });
 
 class AuthRepository {
-  final Dio dio;
-  final String baseUrl;
   final FlutterSecureStorage storage;
   final UserRepository userRepository;
 
-  AuthRepository(
-      {required this.dio, required this.baseUrl, required this.storage, required this.userRepository});
+  AuthRepository({required this.storage, required this.userRepository});
 
-  Future<OAuthResponse> login({
-    required SocialLoginRequest request,
-  }) async {
+  Future<OAuthResponse> login({required SocialLoginRequest request}) async {
     if (request.type == SocialType.KAKAO) {
       if (await isKakaoTalkInstalled()) {
         try {
@@ -86,7 +75,6 @@ class AuthRepository {
 
     final resp = await userRepository.socialLogin(request);
 
-
     print('resp = ${resp.data.toString()}');
 
     await storage.write(key: NAME_KEY, value: request.name);
@@ -94,6 +82,5 @@ class AuthRepository {
     await storage.write(key: SOCIAL_TYPE_KEY, value: request.type.name);
 
     return resp.data;
-    }
-
+  }
 }

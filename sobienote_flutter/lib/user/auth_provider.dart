@@ -36,6 +36,10 @@ class AuthProvider extends ChangeNotifier {
     ref.read(userProvider.notifier).logout();
   }
 
+  void delete() {
+    ref.read(userProvider.notifier).deleteAccount();
+  }
+
   FutureOr<String?> redirectLogic(BuildContext context, GoRouterState state) {
     final UserModelBase? user = ref.watch(userProvider);
     final loggingIn = state.matchedLocation == '/login';
