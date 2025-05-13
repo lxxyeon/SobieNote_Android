@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -17,6 +18,7 @@ import '../board/request/board_request.dart';
 import '../common/const/colors.dart';
 import '../common/const/tags_data.dart';
 import '../common/const/text_style.dart';
+import '../common/util/save_share.dart';
 import '../images/image_provider.dart';
 import '../images/model/board_image.dart';
 
@@ -69,8 +71,8 @@ class _BoardSelectionState extends ConsumerState<BoardSelection> {
                 if (res.data) {
                   ref.invalidate(
                     imagesProvider((
-                      parseDateTime(_boardData!.createdDate).year,
-                      parseDateTime(_boardData!.createdDate).month,
+                    parseDateTime(_boardData!.createdDate).year,
+                    parseDateTime(_boardData!.createdDate).month,
                     )),
                   );
                   Navigator.of(context).pop();
@@ -250,26 +252,26 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child:
-                _form.imageFile != null
-                    ? Image.file(
-                      File(_form.imageFile!.path),
-                      fit: BoxFit.cover,
-                      width: 250,
-                      height: 250,
-                    )
-                    : widget.boardImage != null
-                    ? Image.network(
-                      widget.boardImage!.imagePath,
-                      fit: BoxFit.cover,
-                      width: 250,
-                      height: 250,
-                    )
-                    : Image.asset(
-                      'assets/images/imagePickerImg_G.png',
-                      fit: BoxFit.cover,
-                      width: 250,
-                      height: 250,
-                    ),
+            _form.imageFile != null
+                ? Image.file(
+              File(_form.imageFile!.path),
+              fit: BoxFit.cover,
+              width: 250,
+              height: 250,
+            )
+                : widget.boardImage != null
+                ? Image.network(
+              widget.boardImage!.imagePath,
+              fit: BoxFit.cover,
+              width: 250,
+              height: 250,
+            )
+                : Image.asset(
+              'assets/images/imagePickerImg_G.png',
+              fit: BoxFit.cover,
+              width: 250,
+              height: 250,
+            ),
           ),
         ),
       ),
@@ -300,9 +302,9 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
                 Navigator.pop(context);
                 final androidInfo = await DeviceInfoPlugin().androidInfo;
                 final status =
-                    androidInfo.version.sdkInt >= 33
-                        ? await Permission.photos.request()
-                        : await Permission.storage.request();
+                androidInfo.version.sdkInt >= 33
+                    ? await Permission.photos.request()
+                    : await Permission.storage.request();
 
                 if (status.isGranted) {
                   await _pickAndCropImage(ImageSource.gallery);
@@ -349,12 +351,16 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
     final isEdit = widget.isDetail;
     final buttonText = isEdit ? '수정하기' : '기록하기';
     final boardAction =
-        isEdit
-            ? () => board.patchBoard(widget.boardId!, buildBoardRequest())
-            : () => board.postBoard(buildBoardRequest());
+    isEdit
+        ? () async =>
+        board.patchBoard(widget.boardId!, await buildBoardRequest())
+        : () async => board.postBoard(await buildBoardRequest());
 
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.9,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width * 0.9,
       child: TextButton(
         style: TextButton.styleFrom(
           backgroundColor: DARK_TEAL,
@@ -380,25 +386,30 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
               await showDialog(
                 context: context,
                 builder:
-                    (context) => CupertinoAlertDialog(
-                      title: Text(isEdit ? '수정이 완료되었습니다.' : '기록이 완료되었습니다.'),
-                      actions: [
-                        CupertinoDialogAction(
-                          child: Text('확인'),
-                          onPressed: () {
-                            ref.invalidate(
-                              imagesProvider((
-                                DateTime.now().year,
-                                DateTime.now().month,
-                              )),
-                            );
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
+                    (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(isEdit ? '수정이 완료되었습니다.' : '기록이 완료되었습니다.'),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: Text('확인'),
+                        onPressed: () {
+                          ref.invalidate(
+                            imagesProvider((
+                            DateTime
+                                .now()
+                                .year,
+                            DateTime
+                                .now()
+                                .month,
+                            )),
+                          );
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
               );
-
               if (!isEdit) {
                 setState(() {
                   _form.imageFile = null;
@@ -409,6 +420,7 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
                   _form.detailController.clear();
                 });
               }
+              context.go('/?refresh=${DateTime.now().millisecondsSinceEpoch}');
             }
           } catch (e) {
             print(e);
@@ -441,7 +453,8 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
     await showDialog(
       context: context,
       builder:
-          (_) => CupertinoAlertDialog(
+          (_) =>
+          CupertinoAlertDialog(
             title: Text(message),
             actions: [
               CupertinoDialogAction(
@@ -453,16 +466,21 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
     );
   }
 
-  BoardRequest buildBoardRequest() {
+  Future<BoardRequest> buildBoardRequest() async {
+    late final file;
+    if (_form.imageFile == null) {
+      file = await downloadNetworkImageToFile(widget.boardImage!.imagePath);
+    }
     return BoardRequest(
       contents: _form.detailController.text,
       categories: categories[_form.category!],
       emotions: emotions[_form.emotion!],
       factors: factors[_form.factor!],
       satisfactions: int.parse(satisfactions[_form.satisfaction!]),
-      file: File(_form.imageFile!.path),
+      file: _form.imageFile != null ? File(_form.imageFile!.path) : file,
     );
   }
+
 
   Widget _renderDetail() {
     return Column(
@@ -476,9 +494,9 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
               hintText: '물건의 특징이나 구매 동기 등을 적어보세요!',
               hintStyle: TextStyle(color: GRAY_06),
               counterStyle:
-                  _form.detailController.text.length == 40
-                      ? TextStyle(color: Colors.red)
-                      : TextStyle(color: FONT_GRAY),
+              _form.detailController.text.length == 40
+                  ? TextStyle(color: Colors.red)
+                  : TextStyle(color: FONT_GRAY),
             ),
             maxLength: 40,
           ),

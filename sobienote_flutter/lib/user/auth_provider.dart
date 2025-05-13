@@ -1,7 +1,6 @@
-
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sobienote_flutter/user/user_provider.dart';
@@ -27,9 +26,24 @@ class AuthProvider extends ChangeNotifier {
   }
 
   List<RouteBase> get routes => [
-    GoRoute(path: '/', name: RootTab.routeName, builder: (context, state) => RootTab()),
-    GoRoute(path: '/splash', name: SplashScreen.routeName, builder: (context, state) => SplashScreen()),
-    GoRoute(path: '/login', name: OnboardingScreen.routeName, builder: (context, state) => OnboardingScreen()),
+    GoRoute(
+      path: '/',
+      name: RootTab.routeName,
+      pageBuilder: (context, state) => MaterialPage(
+        key: ValueKey('RootTab-${DateTime.now().millisecondsSinceEpoch}'), // 항상 새로 빌드
+        child: const RootTab(),
+      ),
+    ),
+    GoRoute(
+      path: '/splash',
+      name: SplashScreen.routeName,
+      builder: (context, state) => SplashScreen(),
+    ),
+    GoRoute(
+      path: '/login',
+      name: OnboardingScreen.routeName,
+      builder: (context, state) => OnboardingScreen(),
+    ),
   ];
 
   void logout() {

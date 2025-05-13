@@ -7,6 +7,9 @@ import 'package:sobienote_flutter/user/auth_provider.dart';
 import '../common/const/data.dart';
 import '../common/const/text_style.dart';
 import '../component/default_layout.dart';
+import '../goal/goal_provider.dart';
+import '../images/image_provider.dart';
+import '../user/user_provider.dart';
 
 class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
@@ -48,8 +51,12 @@ class SettingScreen extends ConsumerWidget {
                       actions: [
                         CupertinoDialogAction(
                           child: const Text('확인', style: TextStyle(color: Colors.blue)),
-                          onPressed: () {
+                          onPressed: () async {
                             auth.logout();
+                            // await auth.logout();
+                            ref.invalidate(userProvider);
+                            ref.invalidate(goalProvider);
+                            ref.invalidate(imagesProvider((DateTime.now().year, DateTime.now().month))); // 각각 무효화
                             Navigator.pop(context);
                           },
                         ),

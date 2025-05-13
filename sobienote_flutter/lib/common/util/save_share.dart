@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:media_store_plus/media_store_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -63,5 +64,37 @@ Future<void> shareImage(Uint8List imageBytes) async {
     );
   } catch (e) {
     print("공유 실패: $e");
+  }
+}
+
+Future<File> downloadNetworkImageToFile(String url) async {
+  try {
+    final directory = await getTemporaryDirectory();
+    final filePath = '${directory.path}/downloaded_image_${DateTime.now().millisecondsSinceEpoch}.png';
+    final file = File(filePath);
+
+    final response = await Dio().download(
+      url,
+      filePath,
+      options: Options(responseType: ResponseType.bytes),
+    );
+
+    if (response.statusCode == 200) {
+      return file;
+    } else {
+      throw Exception('Failed to download image. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Image download failed: $e');
+  }
+}
+
+Future<void> deleteTemporaryFile(File file) async {
+  try {
+    if (await file.exists()) {
+      await file.delete();
+    }
+  } catch (e) {
+    print('파일 삭제 실패: $e');
   }
 }
