@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 import 'common/provider/route_provider.dart';
+import 'common/provider/secure_storage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +20,18 @@ void main() {
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
+
+  void delete(FlutterSecureStorage storage) async {
+    await storage.deleteAll();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    // final storage = ref.watch(secureStorageProvider);
+    //
+    // delete(storage);
+    //
     return MaterialApp.router(
       routerConfig: router,
       title: 'Flutter Demo',
