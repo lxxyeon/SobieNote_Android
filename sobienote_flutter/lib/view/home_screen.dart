@@ -133,17 +133,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     await ref.read(setGoalProvider(text));
                                     FocusScope.of(context).unfocus();
                                     ref.invalidate(goalProvider);
-                                    showCupertinoDialog(context: context, builder: (context) {
-                                      return CupertinoAlertDialog(
-                                        title: Text('${DateTime.now().month} 월 목표가 저장됐어요!'),
-                                        actions: [
-                                          CupertinoDialogAction(
-                                            child: Text('확인'),
-                                            onPressed: () => Navigator.pop(context),
+                                    showCupertinoDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return CupertinoAlertDialog(
+                                          title: Text(
+                                            '${DateTime.now().month} 월 목표가 저장됐어요!',
                                           ),
-                                        ],
-                                      );
-                                    });
+                                          actions: [
+                                            CupertinoDialogAction(
+                                              child: Text('확인'),
+                                              onPressed:
+                                                  () => Navigator.pop(context),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   }
                                 },
                               ),
@@ -172,7 +178,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
             if (images.isLoading)
-              SliverFillRemaining(child: Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator())))
+              SliverFillRemaining(
+                child: Center(
+                  child: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              )
             else if (images.hasError ||
                 images.value == null ||
                 images.value!.isEmpty)

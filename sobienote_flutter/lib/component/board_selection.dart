@@ -75,7 +75,7 @@ class _BoardSelectionState extends ConsumerState<BoardSelection> {
                     parseDateTime(_boardData!.createdDate).month,
                     )),
                   );
-                  Navigator.of(context).pop();
+                  context.go('/?refresh=${DateTime.now().millisecondsSinceEpoch}');
                 }
               },
             ),
