@@ -21,40 +21,51 @@ class ReportCategory extends StatelessWidget {
         final items = snapshot.data!.data;
         items.sort((a, b) => b.value_cnt.compareTo(a.value_cnt));
         final top3Keywords = getTop3Ranks(items);
-        final half = (items.length / 2).ceil();
-        final leftList = items.sublist(0, half);
-        final rightList = items.sublist(half);
+
+        final top3List = items.where((e) => top3Keywords.containsKey(e.keyword)).toList();
+        final remaining = items.where((e) => !top3Keywords.containsKey(e.keyword)).toList();
+
+        final half = (remaining.length / 2).ceil();
+        final leftRemaining = remaining.sublist(0, half);
+        final rightList = remaining.sublist(half);
+
+        final leftList = [...top3List, ...leftRemaining];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('이번 달엔 여기에 많이 썼어요', style: kTitleTextStyle),
             const SizedBox(height: 30),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildColumn(
-                    leftList,
-                    CrossAxisAlignment.end,
-                    TextAlign.right,
-                    top3Keywords,
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: _buildColumn(
+                      leftList,
+                      CrossAxisAlignment.end,
+                      TextAlign.right,
+                      top3Keywords,
+                    ),
                   ),
-                ),
-                Container(
-                  height: 250,
-                  width: 1,
-                  color: GRAY_06,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                ),
-                Expanded(
-                  child: _buildColumn(
-                    rightList,
-                    CrossAxisAlignment.start,
-                    TextAlign.left,
-                    {},
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: VerticalDivider(
+                      width: 1,
+                      thickness: 1,
+                      color: GRAY_06,
+                    ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: _buildColumn(
+                      rightList,
+                      CrossAxisAlignment.start,
+                      TextAlign.left,
+                      {},
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         );
@@ -84,47 +95,45 @@ class ReportCategory extends StatelessWidget {
   }
 
 
-  Widget _buildColumn(
-    List<ReportResponse> categories,
-    CrossAxisAlignment alignment,
-    TextAlign textAlign,
-      Map<String, int> topRanks,
-  ) {
+  Widget _buildColumn(List<ReportResponse> categories,
+      CrossAxisAlignment alignment,
+      TextAlign textAlign,
+      Map<String, int> topRanks,) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: alignment,
       children:
-          categories.map((item) {
-            final rank = topRanks[item.keyword];
-            final isTop3 = rank != null;
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 7.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isTop3)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6.0),
-                      child: Image.asset(
-                        'assets/images/rank${rank}.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ),
-                  Text(
-                    item.keyword,
-                    textAlign: textAlign,
-                    style: const TextStyle(fontSize: 16),
+      categories.map((item) {
+        final rank = topRanks[item.keyword];
+        final isTop3 = rank != null;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 7.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isTop3)
+                Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
+                  child: Image.asset(
+                    'assets/images/rank${rank}.png',
+                    width: 24,
+                    height: 24,
                   ),
-                  Expanded(child: Container()),
-                  Text(
-                    '${item.value_cnt}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ],
+                ),
+              Text(
+                item.keyword,
+                textAlign: textAlign,
+                style: const TextStyle(fontSize: 16),
               ),
-            );
-          }).toList(),
+              Expanded(child: Container()),
+              Text(
+                '${item.value_cnt}',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 }
