@@ -200,38 +200,46 @@ class _BoardContentSectionState extends ConsumerState<BoardContentSection> {
           children: [
             _renderImagePreview(),
             const SizedBox(height: 52),
-            TagSelector(
-              title: '오늘은 무엇을 샀나요?',
-              tagList: categories,
-              selectedIndex: _form.category,
-              onTagSelected: (i) => setState(() => _form.category = i),
-            ),
-            const SizedBox(height: 48),
-            TagSelector(
-              title: '사고 나서 어떤 기분이 들었나요?',
-              tagList: emotions,
-              selectedIndex: _form.emotion,
-              onTagSelected: (i) => setState(() => _form.emotion = i),
-            ),
-            const SizedBox(height: 48),
-            TagSelector(
-              title: '이 물건이 갖고 있는 가치나 의미는 무엇인가요?',
-              tagList: factors,
-              selectedIndex: _form.factor,
-              onTagSelected: (i) => setState(() => _form.factor = i),
-            ),
-            const SizedBox(height: 48),
-            TagSelector(
-              title: '이 달의 소비 목표를 이루는데 얼마나 기여했나요?',
-              tagList: satisfactions,
-              selectedIndex: _form.satisfaction,
-              onTagSelected: (i) => setState(() => _form.satisfaction = i),
-            ),
-            const SizedBox(height: 48),
-            _renderDetail(),
-            const SizedBox(height: 48),
-            _renderSubmitButton(),
-            const SizedBox(height: 48),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TagSelector(
+                    title: '오늘은 무엇을 샀나요?',
+                    tagList: categories,
+                    selectedIndex: _form.category,
+                    onTagSelected: (i) => setState(() => _form.category = i),
+                  ),
+                  const SizedBox(height: 48),
+                  TagSelector(
+                    title: '사고 나서 어떤 기분이 들었나요?',
+                    tagList: emotions,
+                    selectedIndex: _form.emotion,
+                    onTagSelected: (i) => setState(() => _form.emotion = i),
+                  ),
+                  const SizedBox(height: 48),
+                  TagSelector(
+                    title: '이 물건이 갖고 있는 가치나\n의미는 무엇인가요?',
+                    tagList: factors,
+                    selectedIndex: _form.factor,
+                    onTagSelected: (i) => setState(() => _form.factor = i),
+                  ),
+                  const SizedBox(height: 48),
+                  TagSelector(
+                    title: '이 달의 소비 목표를 이루는데\n얼마나 기여했나요?',
+                    tagList: satisfactions,
+                    selectedIndex: _form.satisfaction,
+                    onTagSelected: (i) => setState(() => _form.satisfaction = i),
+                  ),
+                  const SizedBox(height: 48),
+                  _renderDetail(),
+                  const SizedBox(height: 48),
+                  _renderSubmitButton(),
+                  const SizedBox(height: 48),
+                ],
+              ),
+            )
           ],
         );
       },

@@ -19,39 +19,35 @@ class TagSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: screenWidth * 0.9),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: GRAY_00,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: GRAY_00,
           ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 12.0,
-            runSpacing: 12.0,
-            children:
-                tagList
-                    .asMap()
-                    .entries
-                    .map(
-                      (e) => BtnTag(
-                        text: e.value,
-                        selected: selectedIndex == e.key,
-                        onPressed: () => onTagSelected(e.key),
-                      ),
-                    )
-                    .toList(),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 12.0,
+          runSpacing: 12.0,
+          children:
+              tagList
+                  .asMap()
+                  .entries
+                  .map(
+                    (e) => BtnTag(
+                      text: e.value,
+                      selected: selectedIndex == e.key,
+                      onPressed: () => onTagSelected(e.key),
+                    ),
+                  )
+                  .toList(),
+        ),
+      ],
     );
   }
 }
