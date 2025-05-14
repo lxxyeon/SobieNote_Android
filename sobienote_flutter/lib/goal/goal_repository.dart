@@ -22,12 +22,14 @@ abstract class GoalRepository {
 
   @GET('/{memberId}')
   @Headers({'accessToken': 'true'})
-  Future<BaseResponse<String>> getGoal(@Path('memberId') int memberId);
+  Future<BaseResponse<String>> getGoal(@Path('memberId') int memberId, @Query('year') int year, @Query('month') int month);
 
   @POST('/{memberId}')
   @Headers({'accessToken': 'true', 'Content-Type': 'application/json'})
   Future<BaseResponse<GoalResponse>> setGoal(
     @Path('memberId') int memberId,
+    @Query('year') int year,
+    @Query('month') int month,
     @Body() GoalRequest body,
   );
 }

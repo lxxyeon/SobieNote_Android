@@ -18,9 +18,13 @@ class _GoalRepository implements GoalRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseResponse<String>> getGoal(int memberId) async {
+  Future<BaseResponse<String>> getGoal(
+    int memberId,
+    int year,
+    int month,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'year': year, r'month': month};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
@@ -51,10 +55,12 @@ class _GoalRepository implements GoalRepository {
   @override
   Future<BaseResponse<GoalResponse>> setGoal(
     int memberId,
+    int year,
+    int month,
     GoalRequest body,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'year': year, r'month': month};
     final _headers = <String, dynamic>{
       r'accessToken': 'true',
       r'Content-Type': 'application/json',

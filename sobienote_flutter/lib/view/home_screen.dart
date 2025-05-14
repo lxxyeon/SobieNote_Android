@@ -56,14 +56,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final double appBarHeight =
         MediaQuery.of(context).padding.top + kToolbarHeight;
     final images = ref.watch(imagesProvider((selectedYear, selectedMonth)));
-    final goal = ref.watch(goalProvider);
-    ref.listen(goalProvider, (previous, next) {
-      next.whenData((value) {
-        if (_goalController.text.isEmpty && value != null) {
-          _goalController.text = value;
-        }
-      });
-    });
+    final goal = ref.watch(goalProvider((selectedYear, selectedMonth)));
+    if (_goalController.text.isEmpty || _goalController.text != goal.value) {
+      _goalController.text = goal.value ?? '';
+    }
     return Stack(
       children: [
         CustomScrollView(
@@ -130,7 +126,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 onPressed: () async {
                                   final text = _goalController.text.trim();
                                   if (text.isNotEmpty) {
-                                    await ref.read(setGoalProvider(text));
+                                    await ref.read(setGoalProvider((selectedYear, selectedMonth,text)));
                                     FocusScope.of(context).unfocus();
                                     ref.invalidate(goalProvider);
                                     showCupertinoDialog(
@@ -138,7 +134,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       builder: (context) {
                                         return CupertinoAlertDialog(
                                           title: Text(
-                                            '${DateTime.now().month} 월 목표가 저장됐어요!',
+                                            '$selectedMonth 월 목표가 저장됐어요!',
                                           ),
                                           actions: [
                                             CupertinoDialogAction(
