@@ -33,7 +33,13 @@ class DefaultLayout extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor ?? Colors.white,
       appBar: appBar,
-      bottomNavigationBar: bottomNavigationBar,
+      bottomNavigationBar:
+          bottomNavigationBar != null
+              ? Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: SizedBox(width: targetWidth, child: bottomNavigationBar),
+              )
+              : null,
       body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding,
