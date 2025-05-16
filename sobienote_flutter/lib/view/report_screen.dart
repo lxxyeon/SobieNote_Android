@@ -48,17 +48,16 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
         tabIdx = tabController.index;
         _loadData();
       });
-    });    _loadData();
+    });
+    _loadData();
   }
 
   void _loadData() {
     final report = ref.read(reportNotifierProvider);
-    final int? month = (tabIdx == 0) ? selectedMonth : null;
-
-    _categoriesFuture = report.getCategories(selectedYear, month);
-    _factorsFuture = report.getFactors(selectedYear, month);
-    _emotionsFuture = report.getEmotions(selectedYear, month);
-    _avgSatisfactionFuture = report.getAvgSatisfaction(selectedYear, month);
+    _categoriesFuture = report.getCategories(selectedYear, selectedMonth);
+    _factorsFuture = report.getFactors(selectedYear, selectedMonth);
+    _emotionsFuture = report.getEmotions(selectedYear, selectedMonth);
+    _avgSatisfactionFuture = report.getAvgSatisfaction(selectedYear, selectedMonth);
   }
 
   void _toggleTopSheet() {
@@ -113,7 +112,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
               ),
             ),
             _buildActionButtons(),
-            const SizedBox(height: 30,)
+            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -180,18 +179,21 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
       final pngBytes = byteData!.buffer.asUint8List();
 
       await saveImageToGallery(pngBytes);
-      showCupertinoDialog(context: context, builder: (context) {
-        return CupertinoAlertDialog(
-          title: const Text('보고서 저장 완료'),
-          content: const Text('앨범에 보고서를 저장했습니다'),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text('확인'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      });
+      showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: const Text('보고서 저장 완료'),
+            content: const Text('앨범에 보고서를 저장했습니다'),
+            actions: [
+              CupertinoDialogAction(
+                child: const Text('확인'),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       print("저장 실패: $e");
     }
@@ -285,14 +287,16 @@ class _ReportScreenState extends ConsumerState<ReportScreen>
       selectedMonth: selectedMonth,
       selectedYear: selectedYear,
       tabIndex: tabIdx,
-      onMonthSelected: (val) => setState(() {
-        selectedMonth = val;
-        _loadData();
-      }),
-      onYearSelected: (val) => setState(() {
-        selectedYear = val;
-        _loadData();
-      }),
+      onMonthSelected:
+          (val) => setState(() {
+            selectedMonth = val;
+            _loadData();
+          }),
+      onYearSelected:
+          (val) => setState(() {
+            selectedYear = val;
+            _loadData();
+          }),
     );
   }
 }

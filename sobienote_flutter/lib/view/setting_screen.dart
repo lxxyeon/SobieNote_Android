@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sobienote_flutter/common/provider/secure_storage.dart';
 import 'package:sobienote_flutter/user/auth_provider.dart';
 
@@ -44,50 +45,68 @@ class SettingScreen extends ConsumerWidget {
                 _buildSettingItem('이름', name, null),
                 _buildSettingItem('이메일', email, null),
                 _buildSettingItem('로그아웃', '', () {
-                  showCupertinoDialog(context: context, builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: const Text('로그아웃 하시겠습니까?'),
-                      content: const Text('로그인 화면으로 이동합니다.'),
-                      actions: [
-                        CupertinoDialogAction(
-                          child: const Text('확인', style: TextStyle(color: Colors.blue)),
-                          onPressed: () async {
-                            auth.logout();
-                            // await auth.logout();
-                            ref.invalidate(userProvider);
-                            ref.invalidate(goalProvider);
-                            ref.invalidate(imagesProvider((DateTime.now().year, DateTime.now().month))); // 각각 무효화
-                            Navigator.pop(context);
-                          },
-                        ),
-                        CupertinoDialogAction(
-                          child: const Text('취소', style: TextStyle(color: Colors.red),),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
-                    );
-                  });
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: const Text('로그아웃 하시겠습니까?'),
+                        content: const Text('로그인 화면으로 이동합니다.'),
+                        actions: [
+                          CupertinoDialogAction(
+                            child: const Text(
+                              '확인',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              auth.logout();
+                              ref.invalidate(userProvider);
+                              final now = DateTime.now();
+                              ref.invalidate(goalProvider((now.year, now.month)));
+                              ref.invalidate(imagesProvider((now.year, now.month)));
+                              context.go('/login');
+                            },
+                          ),
+                          CupertinoDialogAction(
+                            child: const Text(
+                              '취소',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 }),
-                _buildSettingItem('탈퇴', '', ()  {
-                  showCupertinoDialog(context: context, builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: const Text('회원 탈퇴하시겠습니까?'),
-                      content: const Text('지난 소비기록이 모두 사라집니다.'),
-                      actions: [
-                        CupertinoDialogAction(
-                          child: const Text('확인', style: TextStyle(color: Colors.blue)),
-                          onPressed: () {
-                            auth.delete();
-                            Navigator.pop(context);
-                          },
-                        ),
-                        CupertinoDialogAction(
-                          child: const Text('취소', style: TextStyle(color: Colors.red),),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
-                    );
-                  });
+                _buildSettingItem('탈퇴', '', () {
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: const Text('회원 탈퇴하시겠습니까?'),
+                        content: const Text('지난 소비기록이 모두 사라집니다.'),
+                        actions: [
+                          CupertinoDialogAction(
+                            child: const Text(
+                              '확인',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              auth.delete();
+                              Navigator.pop(context);
+                            },
+                          ),
+                          CupertinoDialogAction(
+                            child: const Text(
+                              '취소',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 }),
               ],
             ),

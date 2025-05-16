@@ -5,7 +5,7 @@ import '../common/const/data.dart';
 import '../common/provider/secure_storage.dart';
 import 'goal_repository.dart';
 
-final goalProvider = FutureProvider.family<String, (int year, int month)>((ref, args) async {
+final goalProvider = FutureProvider.autoDispose.family<String, (int year, int month)>((ref, args) async {
   final repo = ref.watch(goalRepositoryProvider);
   final memberId = await ref
       .watch(secureStorageProvider)

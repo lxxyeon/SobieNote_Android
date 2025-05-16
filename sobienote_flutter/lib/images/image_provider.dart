@@ -11,7 +11,7 @@ final imagesRepositoryProvider = Provider<ImageRepository>((ref) {
   return ImageRepository(dio, baseUrl: 'http://$ip/image');
 });
 
-final imagesProvider = FutureProvider.family<List<BoardImage>, (int year, int month)>(
+final imagesProvider = FutureProvider.autoDispose.family<List<BoardImage>, (int year, int month)>(
       (ref, args) async {
     final repo = ref.watch(imagesRepositoryProvider);
     final memberId = await ref.watch(secureStorageProvider).read(key: MEMBER_ID_KEY);

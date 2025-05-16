@@ -112,7 +112,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               color: Colors.black,
                             ),
                             decoration: InputDecoration(
-                              hintText: goal.value ?? '목표를 적어주세요!',
+                              hintText:
+                                  _goalController.text.isEmpty
+                                      ? '목표를 적어주세요!'
+                                      : null,
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -126,25 +129,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 onPressed: () async {
                                   final text = _goalController.text.trim();
                                   if (text.isNotEmpty) {
-                                    await ref.read(setGoalProvider((selectedYear, selectedMonth,text)));
+                                    await ref.read(
+                                      setGoalProvider((
+                                        selectedYear,
+                                        selectedMonth,
+                                        text,
+                                      )).future,
+                                    );
+
                                     FocusScope.of(context).unfocus();
-                                    ref.invalidate(goalProvider);
+
                                     showCupertinoDialog(
                                       context: context,
-                                      builder: (context) {
-                                        return CupertinoAlertDialog(
-                                          title: Text(
-                                            '$selectedMonth 월 목표가 저장됐어요!',
-                                          ),
-                                          actions: [
-                                            CupertinoDialogAction(
-                                              child: Text('확인'),
-                                              onPressed:
-                                                  () => Navigator.pop(context),
+                                      builder:
+                                          (_) => CupertinoAlertDialog(
+                                            title: Text(
+                                              '$selectedMonth 월 목표가 저장됐어요!',
                                             ),
-                                          ],
-                                        );
-                                      },
+                                            actions: [
+                                              CupertinoDialogAction(
+                                                child: Text('확인'),
+                                                onPressed:
+                                                    () =>
+                                                        Navigator.pop(context),
+                                              ),
+                                            ],
+                                          ),
+                                    );
+                                    ref.invalidate(
+                                      goalProvider((
+                                        selectedYear,
+                                        selectedMonth,
+                                      )),
                                     );
                                   }
                                 },
