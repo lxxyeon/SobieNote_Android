@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
+import 'package:sobienote_flutter/component/sign_up_bottom_sheet.dart';
 import 'package:sobienote_flutter/user/request/social_login_request.dart';
 
 import '../user/user_provider.dart';
 
 class OnboardingScreen extends ConsumerWidget {
   static String get routeName => 'onboarding';
+
   const OnboardingScreen({super.key});
 
   @override
@@ -61,7 +63,10 @@ class OnboardingScreen extends ConsumerWidget {
                                     hintText: '이메일',
                                     fillColor: Colors.white,
                                     filled: true,
-                                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 12,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide.none,
@@ -79,7 +84,10 @@ class OnboardingScreen extends ConsumerWidget {
                                     hintText: '비밀번호',
                                     fillColor: Colors.white,
                                     filled: true,
-                                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 12,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide.none,
@@ -128,7 +136,9 @@ class OnboardingScreen extends ConsumerWidget {
                               color: KAKAO_YELLOW,
                               width: 40,
                               height: 40,
-                              child: Image.asset('assets/images/logo_kakao.png'),
+                              child: Image.asset(
+                                'assets/images/logo_kakao.png',
+                              ),
                             ),
                           ),
                         ),
@@ -151,7 +161,9 @@ class OnboardingScreen extends ConsumerWidget {
                               color: Colors.white,
                               width: 40,
                               height: 40,
-                              child: Image.asset('assets/images/logo_kakao.png'),
+                              child: Image.asset(
+                                'assets/images/logo_kakao.png',
+                              ),
                             ),
                           ),
                         ),
@@ -162,7 +174,13 @@ class OnboardingScreen extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) => SignUpBottomSheet(),
+                            );
+                          },
                           child: const Text(
                             '가입 하기',
                             style: TextStyle(
