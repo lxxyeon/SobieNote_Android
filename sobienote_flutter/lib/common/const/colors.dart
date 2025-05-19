@@ -31,3 +31,5 @@ const GRAY_07 = Color(0xFFE6E6E5);
 const GRAY_06 = Color(0xFFC7C8C6);
 const GRAY_05 = Color(0xFFAEAFAC);
 const GRAY_00 = Color(0xFF0D0D0D);
+
+const KAKAO_YELLOW = Color(0xFFf9e000);

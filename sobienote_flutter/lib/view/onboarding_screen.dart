@@ -32,56 +32,169 @@ class OnboardingScreen extends ConsumerWidget {
           horizontal: horizontalPadding,
           vertical: verticalPadding,
         ),
-        child: SizedBox(
-          width: targetWidth,
-          height: targetHeight,
-          child: Column(
-            children: [
-              Expanded(
-                child: Image.asset(
+        child: SingleChildScrollView(
+          child: SizedBox(
+            width: targetWidth,
+            height: targetHeight,
+            child: Column(
+              children: [
+                Image.asset(
                   'assets/images/new_onboarding.jpeg',
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 32),
-                child: Column(
+                Column(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        ref.read(userProvider.notifier).login(
-                          request: SocialLoginRequest(
-                            email: '',
-                            name: '',
-                            type: SocialType.KAKAO,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 85,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 40,
+                                width: 250,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    hintText: '이메일',
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              SizedBox(
+                                height: 40,
+                                width: 250,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    hintText: '비밀번호',
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                      child: Image.asset('assets/images/kakao_login.png'),
+                        ),
+                        const SizedBox(width: 5),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            width: 50,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(child: const Text('확인')),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            ref
+                                .read(userProvider.notifier)
+                                .login(
+                                  request: SocialLoginRequest(
+                                    email: '',
+                                    name: '',
+                                    type: SocialType.KAKAO,
+                                  ),
+                                );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: Container(
+                              color: KAKAO_YELLOW,
+                              width: 40,
+                              height: 40,
+                              child: Image.asset('assets/images/logo_kakao.png'),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () {
+                            ref
+                                .read(userProvider.notifier)
+                                .login(
+                                  request: SocialLoginRequest(
+                                    email: '',
+                                    name: '',
+                                    type: SocialType.GOOGLE,
+                                  ),
+                                );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: Container(
+                              color: Colors.white,
+                              width: 40,
+                              height: 40,
+                              child: Image.asset('assets/images/logo_kakao.png'),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
-                    GestureDetector(
-                      onTap: () {
-                        ref.read(userProvider.notifier).login(
-                          request: SocialLoginRequest(
-                            email: '',
-                            name: '',
-                            type: SocialType.GOOGLE,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            '가입 하기',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: DARK_GRAY,
+                            ),
                           ),
-                        );
-                      },
-                      child: Image.asset('assets/images/google_login.png'),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(color: DARK_GRAY, height: 16, width: 2),
+                        const SizedBox(width: 6),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            '회원 찾기',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: DARK_GRAY,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
-
 }
