@@ -4,6 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:sobienote_flutter/common/provider/secure_storage.dart';
+import 'package:sobienote_flutter/user/request/login_request.dart';
+import 'package:sobienote_flutter/user/request/sign_up_form.dart';
 import 'package:sobienote_flutter/user/request/social_login_request.dart';
 import 'package:sobienote_flutter/user/response/oauth_response.dart';
 import 'package:sobienote_flutter/user/user_repository.dart';
@@ -22,7 +24,7 @@ class AuthRepository {
 
   AuthRepository({required this.storage, required this.userRepository});
 
-  Future<OAuthResponse> login({required SocialLoginRequest request}) async {
+  Future<OAuthResponse> socialLogin({required SocialLoginRequest request}) async {
     if (request.type == SocialType.KAKAO) {
       if (await isKakaoTalkInstalled()) {
         try {
@@ -81,6 +83,22 @@ class AuthRepository {
     await storage.write(key: EMAIL_KEY, value: request.email);
     await storage.write(key: SOCIAL_TYPE_KEY, value: request.type.name);
 
+    return resp.data;
+  }
+
+  Future<OAuthResponse> login({required LoginRequest request}) async {
+    final resp = await userRepository.login(request);
+    print('resp = ${resp.data.toString()}');
+
+    await storage.write(key: NAME_KEY, value: request.password);
+    await storage.write(key: EMAIL_KEY, value: request.email);
+    await storage.write(key: SOCIAL_TYPE_KEY, value: SocialType.LOCAL.name);
+
+    return resp.data;
+  }
+  
+  Future<SignUpForm> signUp({required SignUpForm form}) async {
+    final resp = await userRepository.signUp(form);
     return resp.data;
   }
 }

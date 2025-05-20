@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:sobienote_flutter/user/request/login_request.dart';
+import 'package:sobienote_flutter/user/request/sign_up_form.dart';
 import 'package:sobienote_flutter/user/request/social_login_request.dart';
 import 'package:sobienote_flutter/user/user_repository.dart';
 
@@ -62,10 +64,23 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
     }
   }
 
-  Future<UserModelBase> login({required SocialLoginRequest request}) async {
+  Future<UserModelBase> login({
+    SocialLoginRequest? socialLoginRequest,
+    LoginRequest? loginRequest,
+  }) async {
     try {
       state = UserModelLoading();
-      final resp = await authRepository.login(request: request);
+      late final resp;
+      if (socialLoginRequest != null) {
+        resp = await authRepository.socialLogin(
+          request: socialLoginRequest,
+        );
+      }
+      if (loginRequest != null) {
+        resp = await authRepository.login(
+          request: loginRequest,
+        );
+      }
       print('resp in user_provider: $resp');
       await secureStorage.write(key: ACCESS_TOKEN_KEY, value: resp.accessToken);
       await secureStorage.write(
@@ -112,5 +127,23 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       secureStorage.delete(key: EMAIL_KEY),
       secureStorage.delete(key: NAME_KEY),
     ]);
+  }
+
+  Future<UserModelBase> signUp({required SignUpForm form}) async {
+    try {
+      state = UserModelLoading();
+      final resp = await authRepository.signUp(form: form);
+      state = UserModel(
+        email: resp.email,
+        type: SocialType.LOCAL,
+        nickName: resp.name,
+      );
+      final userModel = await login(loginRequest: LoginRequest(email: resp.email, password: resp.password));
+      state = userModel;
+      return userModel;
+    } catch(e) {
+      state = UserModelError(message: '회원가입에 실패했습니다.');
+      return Future.value(state);
+    }
   }
 }

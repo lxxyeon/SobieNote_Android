@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sobienote_flutter/common/provider/secure_storage.dart';
 import 'package:sobienote_flutter/user/model/user_model.dart';
+import 'package:sobienote_flutter/user/request/login_request.dart';
 
 import '../../user/request/social_login_request.dart';
 import '../../user/user_provider.dart';
@@ -45,16 +46,22 @@ class CustomInterceptor extends Interceptor {
         handler.reject(err);
         return;
       }
-
-      final resp = await ref
-          .read(userProvider.notifier)
-          .login(
-            request: SocialLoginRequest(
-              email: email,
-              name: name,
-              type: SocialType.getByName(type!),
-            ),
-          );
+      late final resp;
+      if (SocialType.getByName(type) == SocialType.LOCAL) {
+        resp = await ref
+            .read(userProvider.notifier)
+            .login(loginRequest: LoginRequest(email: email, password: name));
+      } else {
+        resp = await ref
+            .read(userProvider.notifier)
+            .login(
+              socialLoginRequest: SocialLoginRequest(
+                email: email,
+                name: name,
+                type: SocialType.getByName(type!),
+              ),
+            );
+      }
 
       if (resp is UserModel) {
         final options = err.requestOptions;
@@ -63,7 +70,7 @@ class CustomInterceptor extends Interceptor {
         options.headers.addAll({'authorization': 'Bearer $accessToken'});
         final response = await dio.fetch(options);
         handler.resolve(response);
-      } else if(resp is UserModelError) {
+      } else if (resp is UserModelError) {
         return;
       }
       return;

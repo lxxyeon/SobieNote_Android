@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
+import 'package:sobienote_flutter/user/request/sign_up_form.dart';
 
-class SignUpBottomSheet extends StatefulWidget {
+import '../user/user_provider.dart';
+
+class SignUpBottomSheet extends ConsumerStatefulWidget {
   const SignUpBottomSheet({super.key});
 
   @override
-  State<SignUpBottomSheet> createState() => _SignUpBottomSheetState();
+  ConsumerState<SignUpBottomSheet> createState() => _SignUpBottomSheetState();
 }
 
-class _SignUpBottomSheetState extends State<SignUpBottomSheet> {
+class _SignUpBottomSheetState extends ConsumerState<SignUpBottomSheet> {
   int _currentStep = 0;
   bool isGangwon = false;
   bool _isValid = false;
@@ -26,6 +30,17 @@ class _SignUpBottomSheetState extends State<SignUpBottomSheet> {
         _isValid = false;
       });
       _validate();
+    } else{
+      ref
+          .read(userProvider.notifier)
+          .signUp(
+        form: SignUpForm(
+          name: _nicknameController.text,
+          password: _pwController.text,
+          email: _emailController.text,
+
+        ),
+      );
     }
   }
 

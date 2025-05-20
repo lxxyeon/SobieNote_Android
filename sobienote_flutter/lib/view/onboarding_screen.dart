@@ -4,6 +4,7 @@ import 'package:sobienote_flutter/common/const/colors.dart';
 import 'package:sobienote_flutter/component/sign_up_bottom_sheet.dart';
 import 'package:sobienote_flutter/user/request/social_login_request.dart';
 
+import '../user/request/login_request.dart';
 import '../user/user_provider.dart';
 
 class OnboardingScreen extends ConsumerWidget {
@@ -13,6 +14,10 @@ class OnboardingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    final _emailController = TextEditingController();
+    final _passwordController = TextEditingController();
+
     final size = MediaQuery.of(context).size;
     final aspectRatio = 9 / 20;
 
@@ -59,6 +64,7 @@ class OnboardingScreen extends ConsumerWidget {
                                 height: 40,
                                 width: 250,
                                 child: TextField(
+                                  controller: _emailController,
                                   decoration: InputDecoration(
                                     hintText: '이메일',
                                     fillColor: Colors.white,
@@ -80,6 +86,8 @@ class OnboardingScreen extends ConsumerWidget {
                                 height: 40,
                                 width: 250,
                                 child: TextField(
+                                  controller: _passwordController,
+                                  obscureText: true,
                                   decoration: InputDecoration(
                                     hintText: '비밀번호',
                                     fillColor: Colors.white,
@@ -101,7 +109,16 @@ class OnboardingScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 5),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            ref
+                                .read(userProvider.notifier)
+                                .login(
+                              loginRequest: LoginRequest(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              ),
+                            );
+                          },
                           child: Container(
                             width: 50,
                             height: 80,
@@ -123,7 +140,7 @@ class OnboardingScreen extends ConsumerWidget {
                             ref
                                 .read(userProvider.notifier)
                                 .login(
-                                  request: SocialLoginRequest(
+                                  socialLoginRequest: SocialLoginRequest(
                                     email: '',
                                     name: '',
                                     type: SocialType.KAKAO,
@@ -136,8 +153,11 @@ class OnboardingScreen extends ConsumerWidget {
                               color: KAKAO_YELLOW,
                               width: 40,
                               height: 40,
-                              child: Image.asset(
-                                'assets/images/logo_kakao.png',
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Image.asset(
+                                  'assets/images/logo_kakao.png',
+                                ),
                               ),
                             ),
                           ),
@@ -148,7 +168,7 @@ class OnboardingScreen extends ConsumerWidget {
                             ref
                                 .read(userProvider.notifier)
                                 .login(
-                                  request: SocialLoginRequest(
+                                  socialLoginRequest: SocialLoginRequest(
                                     email: '',
                                     name: '',
                                     type: SocialType.GOOGLE,
@@ -162,7 +182,7 @@ class OnboardingScreen extends ConsumerWidget {
                               width: 40,
                               height: 40,
                               child: Image.asset(
-                                'assets/images/logo_kakao.png',
+                                'assets/images/logo_google.png',
                               ),
                             ),
                           ),

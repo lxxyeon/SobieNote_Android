@@ -20,6 +20,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
 
 const _$SocialTypeEnumMap = {
   SocialType.KAKAO: 'KAKAO',
-  SocialType.APPLE: 'APPLE',
   SocialType.GOOGLE: 'GOOGLE',
+  SocialType.LOCAL: 'LOCAL',
 };

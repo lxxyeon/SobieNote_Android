@@ -22,6 +22,6 @@ Map<String, dynamic> _$SocialLoginRequestToJson(SocialLoginRequest instance) =>
 
 const _$SocialTypeEnumMap = {
   SocialType.KAKAO: 'KAKAO',
-  SocialType.APPLE: 'APPLE',
   SocialType.GOOGLE: 'GOOGLE',
+  SocialType.LOCAL: 'LOCAL',
 };
