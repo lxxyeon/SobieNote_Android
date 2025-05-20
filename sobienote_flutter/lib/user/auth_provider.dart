@@ -30,7 +30,7 @@ class AuthProvider extends ChangeNotifier {
       path: '/',
       name: RootTab.routeName,
       pageBuilder: (context, state) => MaterialPage(
-        key: ValueKey('RootTab-${DateTime.now().millisecondsSinceEpoch}'), // 항상 새로 빌드
+        key: ValueKey('RootTab-${DateTime.now().millisecondsSinceEpoch}'),
         child: const RootTab(),
       ),
     ),
@@ -55,7 +55,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   FutureOr<String?> redirectLogic(BuildContext context, GoRouterState state) {
-    final UserModelBase? user = ref.read(userProvider);
+    final UserModelBase? user = ref.watch(userProvider);
     final loggingIn = state.matchedLocation == '/login';
 
     if (user == null) {
