@@ -35,6 +35,7 @@ class SettingScreen extends ConsumerWidget {
         final email = snapshot.data!['email']!;
         return DefaultLayout(
           appBar: AppBar(
+            backgroundColor: Colors.white,
             title: Text('설정', style: kTitleTextStyle),
             centerTitle: true,
           ),
@@ -42,9 +43,14 @@ class SettingScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                _buildSettingItem('이름', name, null),
-                _buildSettingItem('이메일', email, null),
-                _buildSettingItem('로그아웃', '', () {
+                _buildSettingItem(
+                  Icon(Icons.person),
+                  '이름',
+                  Icon(Icons.chevron_right),
+                  null,
+                  '',
+                ),
+                _buildSettingItem(Icon(Icons.logout), '로그아웃', null, () {
                   showCupertinoDialog(
                     context: context,
                     builder: (context) {
@@ -61,8 +67,12 @@ class SettingScreen extends ConsumerWidget {
                               auth.logout();
                               ref.invalidate(userProvider);
                               final now = DateTime.now();
-                              ref.invalidate(goalProvider((now.year, now.month)));
-                              ref.invalidate(imagesProvider((now.year, now.month)));
+                              ref.invalidate(
+                                goalProvider((now.year, now.month)),
+                              );
+                              ref.invalidate(
+                                imagesProvider((now.year, now.month)),
+                              );
                               context.go('/login');
                             },
                           ),
@@ -77,8 +87,8 @@ class SettingScreen extends ConsumerWidget {
                       );
                     },
                   );
-                }),
-                _buildSettingItem('탈퇴', '', () {
+                }, ''),
+                _buildSettingItem(Icon(Icons.person_off), '탈퇴', null, () {
                   showCupertinoDialog(
                     context: context,
                     builder: (context) {
@@ -107,7 +117,14 @@ class SettingScreen extends ConsumerWidget {
                       );
                     },
                   );
-                }),
+                }, ''),
+                _buildSettingItem(
+                  Icon(Icons.update),
+                  '앱 버전 정보',
+                  Icon(Icons.chevron_right),
+                  null,
+                  '1.0.0',
+                ),
               ],
             ),
           ),
@@ -116,12 +133,28 @@ class SettingScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSettingItem(String title, String value, VoidCallback? onTap) {
+  Widget _buildSettingItem(
+    Icon icon,
+    String title,
+    Icon? value,
+    VoidCallback? onTap,
+    String? version,
+  ) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey, width: 0.5)),
       ),
-      child: ListTile(title: Text(title), trailing: Text(value), onTap: onTap),
+      child: ListTile(
+        leading: icon,
+        title: Text(title, style: TextStyle(fontSize: 17)),
+        trailing:
+            title == '앱 버전 정보'
+                ? Text(version!, style: TextStyle(fontSize: 17))
+                : title == '이름'
+                ? value
+                : null,
+        onTap: onTap,
+      ),
     );
   }
 }
