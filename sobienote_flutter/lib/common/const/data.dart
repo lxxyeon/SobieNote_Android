@@ -3,4 +3,8 @@ const EMAIL_KEY = 'EMAIL';
 const NAME_KEY = 'NAME';
 const SOCIAL_TYPE_KEY = 'SOCIAL_TYPE';
 const MEMBER_ID_KEY = 'MEMBER_ID';
+const STUDENT_NAME_KEY = 'STUDENT_NAME';
+const SCHOOL_KEY = 'SCHOOL';
+const AGE_KEY = 'AGE';
+
 const ip = '34.47.91.193:8080';

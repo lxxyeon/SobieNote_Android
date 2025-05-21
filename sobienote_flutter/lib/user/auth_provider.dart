@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sobienote_flutter/user/user_provider.dart';
 import 'package:sobienote_flutter/view/onboarding_screen.dart';
+import 'package:sobienote_flutter/view/user_info_screen.dart';
 
 import '../view/root_tab.dart';
 import '../view/splash_screen.dart';
@@ -29,10 +30,13 @@ class AuthProvider extends ChangeNotifier {
     GoRoute(
       path: '/',
       name: RootTab.routeName,
-      pageBuilder: (context, state) => MaterialPage(
-        key: ValueKey('RootTab-${DateTime.now().millisecondsSinceEpoch}'), // 항상 새로 빌드
-        child: const RootTab(),
-      ),
+      pageBuilder:
+          (context, state) => MaterialPage(
+            key: ValueKey(
+              'RootTab-${DateTime.now().millisecondsSinceEpoch}',
+            ), // 항상 새로 빌드
+            child: const RootTab(),
+          ),
     ),
     GoRoute(
       path: '/splash',
@@ -43,6 +47,11 @@ class AuthProvider extends ChangeNotifier {
       path: '/login',
       name: OnboardingScreen.routeName,
       builder: (context, state) => OnboardingScreen(),
+    ),
+    GoRoute(
+      path: '/user-info',
+      name: UserInfoScreen.routeName,
+      builder: (context, state) => UserInfoScreen(),
     ),
   ];
 

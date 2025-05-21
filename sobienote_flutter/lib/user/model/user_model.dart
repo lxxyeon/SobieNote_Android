@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sobienote_flutter/user/request/social_login_request.dart';
 
@@ -18,12 +17,20 @@ class UserModelLoading extends UserModelBase {}
 class UserModel extends UserModelBase {
   final String email;
   final SocialType type;
-  final String? nickName;
+  final String nickName;
+  final String? name;
+  final String? age;
+  final String? school;
 
-  UserModel(
-      {required this.email,
-        required this.type,
-        required this.nickName});
+  UserModel({
+    required this.email,
+    required this.type,
+    required this.nickName,
+    this.name,
+    this.age,
+    this.school,
+  });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 }

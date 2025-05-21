@@ -10,6 +10,26 @@ import '../common/provider/secure_storage.dart';
 import 'auth_repository.dart';
 import 'model/user_model.dart';
 
+final userInfoProvider = FutureProvider<UserModel>((ref) async {
+  final storage = ref.read(secureStorageProvider);
+
+  final nickname = await storage.read(key: NAME_KEY) ?? '';
+  final email = await storage.read(key: EMAIL_KEY) ?? '';
+  final name = await storage.read(key: STUDENT_NAME_KEY);
+  final age = await storage.read(key: AGE_KEY);
+  final school = await storage.read(key: SCHOOL_KEY);
+  final type = await storage.read(key: SOCIAL_TYPE_KEY);
+
+  return UserModel(
+    nickName: nickname,
+    email: email,
+    name: name,
+    age: age,
+    school: school,
+    type: SocialType.getByName(type!),
+  );
+});
+
 final userProvider = StateNotifierProvider<UserStateNotifier, UserModelBase?>((
   ref,
 ) {
@@ -72,14 +92,10 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       state = UserModelLoading();
       late final resp;
       if (socialLoginRequest != null) {
-        resp = await authRepository.socialLogin(
-          request: socialLoginRequest,
-        );
+        resp = await authRepository.socialLogin(request: socialLoginRequest);
       }
       if (loginRequest != null) {
-        resp = await authRepository.login(
-          request: loginRequest,
-        );
+        resp = await authRepository.login(request: loginRequest);
       }
       print('resp in user_provider: $resp');
       await secureStorage.write(key: ACCESS_TOKEN_KEY, value: resp.accessToken);
@@ -107,43 +123,32 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
 
   Future<void> logout() async {
     state = null;
-    await Future.wait([
-      secureStorage.delete(key: ACCESS_TOKEN_KEY),
-      secureStorage.delete(key: MEMBER_ID_KEY),
-      secureStorage.delete(key: SOCIAL_TYPE_KEY),
-      secureStorage.delete(key: EMAIL_KEY),
-      secureStorage.delete(key: NAME_KEY),
-    ]);
+    await Future.wait([secureStorage.deleteAll()]);
   }
 
   Future<void> deleteAccount() async {
     state = null;
     final memberId = await secureStorage.read(key: MEMBER_ID_KEY);
     await userRepository.deleteAccount(int.parse(memberId!));
-    await Future.wait([
-      secureStorage.delete(key: ACCESS_TOKEN_KEY),
-      secureStorage.delete(key: MEMBER_ID_KEY),
-      secureStorage.delete(key: SOCIAL_TYPE_KEY),
-      secureStorage.delete(key: EMAIL_KEY),
-      secureStorage.delete(key: NAME_KEY),
-    ]);
+    await Future.wait([secureStorage.deleteAll()]);
   }
 
-  Future<UserModelBase> signUp({required SignUpForm form}) async {
+  Future<void> signUp({required SignUpForm form}) async {
     try {
-      state = UserModelLoading();
       final resp = await authRepository.signUp(form: form);
-      state = UserModel(
-        email: resp.email,
-        type: SocialType.LOCAL,
-        nickName: resp.name,
+
+      await secureStorage.write(key: MEMBER_ID_KEY, value: resp.accessToken);
+      await secureStorage.write(key: NAME_KEY, value: form.name);
+      await secureStorage.write(key: EMAIL_KEY, value: form.email);
+      await secureStorage.write(
+        key: SOCIAL_TYPE_KEY,
+        value: SocialType.LOCAL.name,
       );
-      final userModel = await login(loginRequest: LoginRequest(email: resp.email, password: resp.password));
-      state = userModel;
-      return userModel;
-    } catch(e) {
-      state = UserModelError(message: '회원가입에 실패했습니다.');
-      return Future.value(state);
+      await secureStorage.write(key: STUDENT_NAME_KEY, value: form.studentName);
+      await secureStorage.write(key: AGE_KEY, value: form.studentName);
+      await secureStorage.write(key: SCHOOL_KEY, value: form.schoolName);
+    } catch (e) {
+      print('회원 가입에 실패했습니다.  -> $e');
     }
   }
 }

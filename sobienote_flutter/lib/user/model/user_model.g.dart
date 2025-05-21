@@ -9,13 +9,19 @@ part of 'user_model.dart';
 UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   email: json['email'] as String,
   type: $enumDecode(_$SocialTypeEnumMap, json['type']),
-  nickName: json['nickName'] as String?,
+  nickName: json['nickName'] as String,
+  name: json['name'] as String?,
+  age: json['age'] as String?,
+  school: json['school'] as String?,
 );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'email': instance.email,
   'type': _$SocialTypeEnumMap[instance.type]!,
   'nickName': instance.nickName,
+  'name': instance.name,
+  'age': instance.age,
+  'school': instance.school,
 };
 
 const _$SocialTypeEnumMap = {

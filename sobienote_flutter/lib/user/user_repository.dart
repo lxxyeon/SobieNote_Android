@@ -31,7 +31,7 @@ abstract class UserRepository {
   Future<BaseResponse<OAuthResponse>> login(@Body() LoginRequest request);
 
   @POST('/signup')
-  Future<BaseResponse<SignUpForm>> signUp(@Body() SignUpForm request);
+  Future<BaseResponse<OAuthResponse>> signUp(@Body() SignUpForm request);
   
   @DELETE('/{memberId}')
   Future<BaseResponse<int>> deleteAccount(@Path('memberId') int memberId);

@@ -97,7 +97,7 @@ class AuthRepository {
     return resp.data;
   }
   
-  Future<SignUpForm> signUp({required SignUpForm form}) async {
+  Future<OAuthResponse> signUp({required SignUpForm form}) async {
     final resp = await userRepository.signUp(form);
     return resp.data;
   }
