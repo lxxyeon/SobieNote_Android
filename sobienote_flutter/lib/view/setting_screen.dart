@@ -13,6 +13,8 @@ import '../images/image_provider.dart';
 import '../user/user_provider.dart';
 
 class SettingScreen extends ConsumerWidget {
+  static String get routeName => 'setting-screen';
+
   const SettingScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {

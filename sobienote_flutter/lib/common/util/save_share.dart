@@ -98,3 +98,20 @@ Future<void> deleteTemporaryFile(File file) async {
     print('파일 삭제 실패: $e');
   }
 }
+
+Future<File> saveImageToLocalDirectory(XFile pickedFile) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final files = directory.listSync();
+  for (var file in files) {
+    if (file is File &&
+        RegExp(r'profile_\d+\.jpg$').hasMatch(file.path.split('/').last)) {
+      await file.delete();
+    }
+  }
+
+  final timestamp = DateTime.now().millisecondsSinceEpoch;
+  final savedPath = '${directory.path}/profile_$timestamp.jpg';
+
+  final savedFile = await File(pickedFile.path).copy(savedPath);
+  return savedFile;
+}

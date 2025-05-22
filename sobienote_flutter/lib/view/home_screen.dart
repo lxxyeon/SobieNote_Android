@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
 import 'package:sobienote_flutter/component/board_selection.dart';
 import 'package:sobienote_flutter/component/default_layout.dart';
@@ -82,10 +83,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               actions: [
                 IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingScreen()),
-                    );
+                    context.pushNamed(SettingScreen.routeName);
                   },
                   icon: Icon(Icons.more_horiz),
                 ),

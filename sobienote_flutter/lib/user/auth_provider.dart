@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sobienote_flutter/user/user_provider.dart';
 import 'package:sobienote_flutter/view/onboarding_screen.dart';
+import 'package:sobienote_flutter/view/setting_screen.dart';
 import 'package:sobienote_flutter/view/user_info_screen.dart';
 
 import '../view/root_tab.dart';
@@ -52,6 +53,11 @@ class AuthProvider extends ChangeNotifier {
       path: '/user-info',
       name: UserInfoScreen.routeName,
       builder: (context, state) => UserInfoScreen(),
+    ),
+    GoRoute(
+      path: '/setting',
+      name: SettingScreen.routeName,
+      builder: (context, state) => SettingScreen(),
     ),
   ];
 
