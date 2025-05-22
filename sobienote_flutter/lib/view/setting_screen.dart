@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sobienote_flutter/common/const/colors.dart';
 import 'package:sobienote_flutter/user/auth_provider.dart';
 import 'package:sobienote_flutter/view/user_info_screen.dart';
@@ -16,6 +17,7 @@ class SettingScreen extends ConsumerWidget {
   static String get routeName => 'setting-screen';
 
   const SettingScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authProvider);
@@ -35,7 +37,7 @@ class SettingScreen extends ConsumerWidget {
               Icon(Icons.person),
               '사용자 정보',
               Icon(Icons.chevron_right),
-                  () {
+              () {
                 context.pushNamed(UserInfoScreen.routeName);
               },
               '',
@@ -57,12 +59,8 @@ class SettingScreen extends ConsumerWidget {
                           auth.logout();
                           ref.invalidate(userProvider);
                           final now = DateTime.now();
-                          ref.invalidate(
-                            goalProvider((now.year, now.month)),
-                          );
-                          ref.invalidate(
-                            imagesProvider((now.year, now.month)),
-                          );
+                          ref.invalidate(goalProvider((now.year, now.month)));
+                          ref.invalidate(imagesProvider((now.year, now.month)));
                           context.go('/login');
                         },
                       ),
@@ -108,12 +106,19 @@ class SettingScreen extends ConsumerWidget {
                 },
               );
             }, ''),
-            _buildSettingItem(
-              Icon(Icons.update),
-              '앱 버전 정보',
-              Icon(Icons.chevron_right),
-              null,
-              '1.0.0',
+            FutureBuilder(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return CircularProgressIndicator();
+                final info = snapshot.data!;
+                return _buildSettingItem(
+                  Icon(Icons.update),
+                  '앱 버전 정보',
+                  Icon(Icons.chevron_right),
+                  null,
+                  info.version.toString(),
+                );
+              },
             ),
           ],
         ),
