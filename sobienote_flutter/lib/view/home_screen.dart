@@ -119,13 +119,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 24,
+                                fontSize: 20,
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  Icons.arrow_circle_up_rounded,
+                                  Icons.cloud_upload,
                                   color: Colors.white,
                                 ),
+                                padding: const EdgeInsets.symmetric(horizontal: 25),
                                 onPressed: () async {
                                   final text = _goalController.text.trim();
                                   if (text.isNotEmpty) {
@@ -136,9 +137,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         text,
                                       )).future,
                                     );
-
                                     FocusScope.of(context).unfocus();
-
                                     showCupertinoDialog(
                                       context: context,
                                       builder:
@@ -168,16 +167,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               filled: true,
                               fillColor: TEAL,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide.none,
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide.none,
                               ),
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 14,
-                                horizontal: 16,
+                                horizontal: 25,
                               ),
                             ),
                           ),

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sobienote_flutter/common/provider/secure_storage.dart';
 import 'package:sobienote_flutter/user/auth_provider.dart';
 
@@ -63,7 +62,6 @@ class SettingScreen extends ConsumerWidget {
                               final now = DateTime.now();
                               ref.invalidate(goalProvider((now.year, now.month)));
                               ref.invalidate(imagesProvider((now.year, now.month)));
-                              context.go('/login');
                             },
                           ),
                           CupertinoDialogAction(
