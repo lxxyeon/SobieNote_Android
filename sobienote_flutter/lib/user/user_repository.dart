@@ -32,7 +32,13 @@ abstract class UserRepository {
 
   @POST('/signup')
   Future<BaseResponse<OAuthResponse>> signUp(@Body() SignUpForm request);
-  
+
   @DELETE('/{memberId}')
   Future<BaseResponse<int>> deleteAccount(@Path('memberId') int memberId);
+
+  @GET('/member/verify')
+  Future<BaseResponse<OAuthResponse>> verifyEmail(
+    @Query('token') String token,
+    @Query('type') VerificationType type,
+  );
 }

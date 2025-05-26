@@ -22,6 +22,8 @@ class _SignUpBottomSheetState extends ConsumerState<SignUpBottomSheet> {
   final _pwController = TextEditingController();
   final _pwConfirmController = TextEditingController();
   final _emailController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _ageController = TextEditingController();
 
   void _nextStep() {
     if (_currentStep < 2) {
@@ -38,7 +40,8 @@ class _SignUpBottomSheetState extends ConsumerState<SignUpBottomSheet> {
           name: _nicknameController.text,
           password: _pwController.text,
           email: _emailController.text,
-
+          studentName: _nameController.text,
+          age: _ageController.text.isEmpty ? null : int.parse(_ageController.text),
         ),
       );
     }

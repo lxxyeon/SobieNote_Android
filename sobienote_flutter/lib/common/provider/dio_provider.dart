@@ -27,7 +27,7 @@ class CustomInterceptor extends Interceptor {
     print(
       '[ERR] [${err.requestOptions.method}] [${err.requestOptions.uri}] [${err.response?.statusCode}]',
     );
-    print(err);
+
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
     if (accessToken == null) {
       handler.reject(err);
@@ -35,9 +35,7 @@ class CustomInterceptor extends Interceptor {
 
     if (err.response?.statusCode == 404) {
       return;
-    }
-
-    if (err.response?.statusCode == 403) {
+    } else if (err.response?.statusCode == 403) {
       final email = await storage.read(key: EMAIL_KEY);
       final name = await storage.read(key: NAME_KEY);
       final type = await storage.read(key: SOCIAL_TYPE_KEY);
@@ -74,6 +72,16 @@ class CustomInterceptor extends Interceptor {
         return;
       }
       return;
+    } else {
+      final data = err.response?.data;
+      if (data is Map<String, dynamic> && data['error'] != null) {
+        final error = data['error'];
+        final code = error['code'];
+        final message = error['message'];
+        print('CODE: $code, MESSAGE: $message');
+      } else {
+        print('Unknown error format: ${err.response?.data}');
+      }
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sobienote_flutter/user/request/login_request.dart';
 import 'package:sobienote_flutter/user/request/sign_up_form.dart';
 import 'package:sobienote_flutter/user/request/social_login_request.dart';
+import 'package:sobienote_flutter/user/response/oauth_response.dart';
 import 'package:sobienote_flutter/user/user_repository.dart';
 
 import '../common/const/data.dart';
@@ -151,4 +152,37 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       print('회원 가입에 실패했습니다.  -> $e');
     }
   }
+
+  Future<void> verifyEmailAndLogin(String token) async {
+    try {
+      final resp = await userRepository.verifyEmail(
+        token,
+        VerificationType.SIGNUP,
+      );
+
+      final oAuthData = resp.data;
+
+      await secureStorage.write(key: ACCESS_TOKEN_KEY, value: oAuthData.accessToken);
+      await secureStorage.write(key: MEMBER_ID_KEY, value: oAuthData.memberId.toString());
+
+      final email = await secureStorage.read(key: EMAIL_KEY);
+      final name = await secureStorage.read(key: NAME_KEY);
+      final type = await secureStorage.read(key: SOCIAL_TYPE_KEY);
+      final studentName = await secureStorage.read(key: STUDENT_NAME_KEY);
+      final age = await secureStorage.read(key: AGE_KEY);
+      final school = await secureStorage.read(key: SCHOOL_KEY);
+
+      state = UserModel(
+        email: email!,
+        nickName: name!,
+        type: SocialType.getByName(type!),
+        name: studentName,
+        age: age,
+        school: school,
+      );
+    } catch (e) {
+      state = UserModelError(message: '이메일 인증 실패: $e');
+    }
+  }
+
 }

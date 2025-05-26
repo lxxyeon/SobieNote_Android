@@ -2,6 +2,11 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'oauth_response.g.dart';
 
+enum VerificationType {
+  SIGNUP,
+  RESET;
+}
+
 @JsonSerializable()
 class OAuthResponse{
   final String accessToken;
